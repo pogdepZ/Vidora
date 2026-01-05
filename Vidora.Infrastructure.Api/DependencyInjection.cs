@@ -14,7 +14,7 @@ public static class DependencyInjection
         // TODO: Configure Infrastructure.Api services here
         // Services
         services.AddTransient<IAuthApiService, AuthApiService>();
-
+        services.AddTransient<IStatsApiService, StatsApiService>();
 
         //
         services.AddSingleton<ApiClient>();

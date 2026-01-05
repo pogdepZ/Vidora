@@ -9,5 +9,6 @@ public sealed partial class AdminDashboardPage : Page
     public AdminDashboardPage()
     {
         InitializeComponent();
+        this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
     }
 }
