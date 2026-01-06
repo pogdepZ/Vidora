@@ -17,6 +17,11 @@ public static class DependencyInjection
         services.AddTransient<LogoutUseCase>();
         services.AddTransient<RegisterUseCase>();
         services.AddTransient<GetDashboardStatsUseCase>();
+        services.AddTransient<GetMoviesUseCase>();
+        services.AddTransient<GetMovieDetailUseCase>();
+        services.AddTransient<DeleteMovieUseCase>();
+        services.AddTransient<CreateMovieUseCase>();
+        services.AddTransient<UpdateMovieUseCase>();
 
         // Services
         services.AddSingleton<ISessionStateService, SessionStateService>();

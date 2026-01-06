@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Vidora.Infrastructure.Api.Dtos.Responses.Datas;
 
-public class DashboardResponseDto
+public record DashboardResponseDto
 {
-    [JsonPropertyName("totalUsers")]
     public int TotalUsers { get; set; }
 
     [JsonPropertyName("totalTodayNewUsers")]

@@ -54,6 +54,15 @@ public class ApiClient
         CancellationToken ct = default)
         => SendAsync(HttpMethod.Delete, url, null, token, headers, ct);
 
+    // Thêm vào ApiClient.cs
+    public Task<HttpResponseMessage> PatchAsync(
+        string url,
+        object? body,
+        string? token = null,
+        Action<HttpRequestHeaders>? headers = null,
+        CancellationToken ct = default)
+        => SendAsync(HttpMethod.Patch, url, body, token, headers, ct);
+
     private async Task<HttpResponseMessage> SendAsync(
         HttpMethod method,
         string url,
@@ -80,4 +89,6 @@ public class ApiClient
 
         return response;
     }
+
+   
 }
