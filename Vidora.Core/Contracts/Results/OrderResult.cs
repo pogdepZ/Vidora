@@ -3,7 +3,7 @@ using System;
 namespace Vidora.Core.Contracts.Results;
 
 /// <summary>
-/// Result model cho Order (??n hàng)
+/// Result model for Order
 /// GET /api/orders/all
 /// </summary>
 public class OrderResult
@@ -36,15 +36,15 @@ public class OrderResult
     // Computed properties
     public string AmountDisplay => $"{Amount:N0} VND";
     public string FinalAmountDisplay => $"{FinalAmount:N0} VND";
-    public string DiscountAmountDisplay => DiscountAmount.HasValue ? $"-{DiscountAmount.Value:N0} VND" : "Không có";
+    public string DiscountAmountDisplay => DiscountAmount.HasValue ? $"-{DiscountAmount.Value:N0} VND" : "None";
 
     public string StatusDisplay => Status?.ToUpper() switch
     {
-        "COMPLETED" => "Hoàn thành",
-        "PAID" => "?ã thanh toán",
-        "PENDING" => "?ang ch?",
-        "FAILED" => "Th?t b?i",
-        "CANCELLED" => "?ã h?y",
+        "COMPLETED" => "Completed",
+        "PAID" => "Paid",
+        "PENDING" => "Pending",
+        "FAILED" => "Failed",
+        "CANCELLED" => "Cancelled",
         _ => Status ?? "N/A"
     };
 
@@ -58,12 +58,12 @@ public class OrderResult
 
     public string OrderTypeDisplay => OrderType switch
     {
-        "New" => "??ng ký m?i",
-        "Renewal" => "Gia h?n",
+        "New" => "New Subscription",
+        "Renewal" => "Renewal",
         _ => OrderType
     };
 
-    public string PaidAtDisplay => PaidAt?.ToString("dd/MM/yyyy HH:mm") ?? "Ch?a thanh toán";
+    public string PaidAtDisplay => PaidAt?.ToString("dd/MM/yyyy HH:mm") ?? "Not Paid";
 
     public string UserDisplay => $"{UserFullName} ({UserEmail})";
 }

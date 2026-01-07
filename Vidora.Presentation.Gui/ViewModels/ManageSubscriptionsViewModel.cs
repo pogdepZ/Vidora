@@ -144,16 +144,16 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
 
     public ObservableCollection<DiscountTypeOption> DiscountTypeOptions { get; } = new()
     {
-        new DiscountTypeOption("fixed_amount", "Giảm cố định (VND)"),
-        new DiscountTypeOption("percentage", "Phần trăm (%)")
+        new DiscountTypeOption("fixed_amount", "Fixed Amount (VND)"),
+        new DiscountTypeOption("percentage", "Percentage (%)")
     };
 
     public ObservableCollection<OrderStatusOption> OrderStatusOptions { get; } = new()
     {
-        new OrderStatusOption(null, "Tất cả"),
-        new OrderStatusOption("COMPLETED", "Hoàn thành"),
-        new OrderStatusOption("PENDING", "Đang chờ"),
-        new OrderStatusOption("FAILED", "Thất bại")
+        new OrderStatusOption(null, "All"),
+        new OrderStatusOption("COMPLETED", "Completed"),
+        new OrderStatusOption("PENDING", "Pending"),
+        new OrderStatusOption("FAILED", "Failed")
     };
 
     #endregion
@@ -377,7 +377,7 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
             if (result.IsSuccess)
             {
                 IsSuccess = true;
-                SuccessMessage = $"Tạo mã giảm giá '{result.Value.Code}' thành công!";
+                SuccessMessage = $"Promo code '{result.Value.Code}' created successfully!";
 
                 // Reset form and reload list
                 ResetNewPromo();

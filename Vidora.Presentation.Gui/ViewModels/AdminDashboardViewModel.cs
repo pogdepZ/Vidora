@@ -20,9 +20,17 @@ public partial class AdminDashboardViewModel : ObservableRecipient, INavigationA
     private readonly IPdfExportService _pdfExportService;
     private readonly IInfoBarService _infoBarService;
 
-    [ObservableProperty] private AdminDashboardResult? _stats;
-    [ObservableProperty] private bool _isLoading;
-    [ObservableProperty] private bool _isExporting;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ExportToPdfCommand))]
+    private AdminDashboardResult? _stats;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ExportToPdfCommand))]
+    private bool _isLoading;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ExportToPdfCommand))]
+    private bool _isExporting;
 
     public string CurrentDate => DateTime.Now.ToString("dd MMMM, yyyy");
 

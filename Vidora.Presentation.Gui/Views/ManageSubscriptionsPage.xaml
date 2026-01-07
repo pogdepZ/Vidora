@@ -37,15 +37,15 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Spacing="10">
-                <TextBlock Text="Quản lý Subscriptions, Promos &amp; Orders"
+                <TextBlock Text="Manage Subscriptions, Promos &amp; Orders"
                            FontSize="30"
                            FontWeight="SemiBold"/>
                 <TextBlock Foreground="Gray" FontSize="14">
-                    <Run Text="Gói đăng ký: "/>
+                    <Run Text="Subscription Plans: "/>
                     <Run Text="{x:Bind ViewModel.Plans.Count, Mode=OneWay}" FontWeight="SemiBold"/>
-                    <Run Text=" | Mã giảm giá: "/>
+                    <Run Text=" | Promo Codes: "/>
                     <Run Text="{x:Bind ViewModel.TotalPromos, Mode=OneWay}" FontWeight="SemiBold"/>
-                    <Run Text=" | Đơn hàng: "/>
+                    <Run Text=" | Orders: "/>
                     <Run Text="{x:Bind ViewModel.TotalOrders, Mode=OneWay}" FontWeight="SemiBold"/>
                 </TextBlock>
             </StackPanel>
@@ -57,7 +57,7 @@
                     VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <FontIcon Glyph="&#xE710;" FontSize="14"/>
-                    <TextBlock Text="Thêm mã giảm giá"/>
+                    <TextBlock Text="Add Promo Code"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -81,13 +81,13 @@
                             </Grid.ColumnDefinitions>
                             
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Gói đăng ký" FontSize="20" FontWeight="SemiBold"/>
-                                <TextBlock Text="Danh sách các gói đăng ký hiện có" Foreground="Gray" FontSize="13"/>
+                                <TextBlock Text="Subscription Plans" FontSize="20" FontWeight="SemiBold"/>
+                                <TextBlock Text="List of available subscription plans" Foreground="Gray" FontSize="13"/>
                             </StackPanel>
                             
                             <Button Grid.Column="1" 
                                     Command="{x:Bind ViewModel.LoadPlansCommand}"
-                                    ToolTipService.ToolTip="Làm mới">
+                                    ToolTipService.ToolTip="Refresh">
                                 <FontIcon Glyph="&#xE72C;" FontSize="14"/>
                             </Button>
                         </Grid>
@@ -164,13 +164,13 @@
                             </Grid.ColumnDefinitions>
                             
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Đơn hàng" FontSize="20" FontWeight="SemiBold"/>
-                                <TextBlock Text="Danh sách các đơn hàng đăng ký gói" Foreground="Gray" FontSize="13"/>
+                                <TextBlock Text="Orders" FontSize="20" FontWeight="SemiBold"/>
+                                <TextBlock Text="List of subscription orders" Foreground="Gray" FontSize="13"/>
                             </StackPanel>
                             
                             <Button Grid.Column="1" 
                                     Command="{x:Bind ViewModel.LoadOrdersCommand}"
-                                    ToolTipService.ToolTip="Làm mới">
+                                    ToolTipService.ToolTip="Refresh">
                                 <FontIcon Glyph="&#xE72C;" FontSize="14"/>
                             </Button>
                         </Grid>
@@ -186,7 +186,7 @@
 
                             <!-- Search Box -->
                             <TextBox Grid.Column="0"
-                                     PlaceholderText="Tìm kiếm theo tên, email, gói..."
+                                     PlaceholderText="Search by name, email, plan..."
                                      Text="{x:Bind ViewModel.OrderSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      
                                      HorizontalAlignment="Stretch"
@@ -195,7 +195,7 @@
                             <!-- Status Filter -->
                             <ComboBox Grid.Column="1"
                                       x:Name="OrderStatusComboBox"
-                                      Header="Trạng thái"
+                                      Header="Status"
                                       Margin="16,0,0,0"
                                       MinWidth="150"
                                       ItemsSource="{x:Bind ViewModel.OrderStatusOptions}"
@@ -206,20 +206,20 @@
                             <!-- Plan Filter -->
                             <ComboBox Grid.Column="2"
                                       x:Name="OrderPlanComboBox"
-                                      Header="Gói đăng ký"
+                                      Header="Subscription Plan"
                                       Margin="16,0,0,0"
                                       MinWidth="150"
                                       ItemsSource="{x:Bind ViewModel.Plans, Mode=OneWay}"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="PlanId"
-                                      PlaceholderText="Tất cả"
+                                      PlaceholderText="All"
                                       SelectionChanged="OnOrderPlanSelectionChanged"/>
 
                             <!-- Clear Filters Button -->
                             <Button Grid.Column="3"
                                     Margin="16,20,0,0"
                                     Command="{x:Bind ViewModel.ClearOrderFiltersCommand}"
-                                    ToolTipService.ToolTip="Xóa bộ lọc">
+                                    ToolTipService.ToolTip="Clear Filters">
                                 <FontIcon Glyph="&#xE711;" FontSize="12"/>
                             </Button>
                         </Grid>
@@ -239,13 +239,13 @@
                                 <ColumnDefinition Width="1.2*"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="MÃ ĐƠN" FontWeight="Bold" Foreground="Gray"/>
-                            <TextBlock Grid.Column="1" Text="KHÁCH HÀNG" FontWeight="Bold" Foreground="Gray"/>
-                            <TextBlock Grid.Column="2" Text="GÓI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="3" Text="GIÁ GỐC" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="4" Text="THANH TOÁN" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="5" Text="TRẠNG THÁI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="6" Text="NGÀY TT" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="ORDER CODE" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock Grid.Column="1" Text="CUSTOMER" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock Grid.Column="2" Text="PLAN" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="ORIGINAL PRICE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="PAYMENT" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="STATUS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="PAID DATE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
                         </Grid>
 
                         <!-- Orders List -->
@@ -257,7 +257,7 @@
                             <StackPanel Visibility="{x:Bind ViewModel.IsLoadingOrders, Converter={StaticResource BoolToVisibilityConverterInvert}, Mode=OneWay}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-                                <TextBlock Text="Không có đơn hàng nào"
+                                <TextBlock Text="No orders found"
                                            Foreground="Gray"
                                            FontSize="14"
                                            Visibility="{x:Bind ViewModel.Orders.Count, Mode=OneWay, Converter={StaticResource IntToVisibilityConverterInvert}}"/>
@@ -367,7 +367,7 @@
                                     IsEnabled="{x:Bind ViewModel.CanGoOrderPrev, Mode=OneWay}"/>
 
                             <TextBlock VerticalAlignment="Center">
-                                <Run Text="Trang "/>
+                                <Run Text="Page "/>
                                 <Run Text="{x:Bind ViewModel.OrderCurrentPage, Mode=OneWay}" FontWeight="Bold"/>
                                 <Run Text=" / "/>
                                 <Run Text="{x:Bind ViewModel.OrderTotalPages, Mode=OneWay}" FontWeight="Bold"/>
@@ -403,13 +403,13 @@
                             </Grid.ColumnDefinitions>
                             
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Mã giảm giá" FontSize="20" FontWeight="SemiBold"/>
-                                <TextBlock Text="Quản lý các mã giảm giá (promo codes)" Foreground="Gray" FontSize="13"/>
+                                <TextBlock Text="Promo Codes" FontSize="20" FontWeight="SemiBold"/>
+                                <TextBlock Text="Manage promo codes" Foreground="Gray" FontSize="13"/>
                             </StackPanel>
                             
                             <Button Grid.Column="1" 
                                     Command="{x:Bind ViewModel.LoadPromosCommand}"
-                                    ToolTipService.ToolTip="Làm mới">
+                                    ToolTipService.ToolTip="Refresh">
                                 <FontIcon Glyph="&#xE72C;" FontSize="14"/>
                             </Button>
                         </Grid>
@@ -429,13 +429,13 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="MÃ CODE" FontWeight="Bold" Foreground="Gray"/>
-                            <TextBlock Grid.Column="1" Text="LOẠI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="2" Text="GIÁ TRỊ" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="3" Text="ĐƠN TỐI THIỂU" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="4" Text="GIẢM TỐI ĐA" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="5" Text="THỜI GIAN" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="6" Text="TRẠNG THÁI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="CODE" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock Grid.Column="1" Text="TYPE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="VALUE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="MIN ORDER" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="MAX DISCOUNT" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="DURATION" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="STATUS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
                         </Grid>
 
                         <!-- Promo List -->
@@ -546,7 +546,7 @@
                                     IsEnabled="{x:Bind ViewModel.CanGoPrev, Mode=OneWay}"/>
 
                             <TextBlock VerticalAlignment="Center">
-                                <Run Text="Trang "/>
+                                <Run Text="Page "/>
                                 <Run Text="{x:Bind ViewModel.CurrentPage, Mode=OneWay}" FontWeight="Bold"/>
                                 <Run Text=" / "/>
                                 <Run Text="{x:Bind ViewModel.TotalPages, Mode=OneWay}" FontWeight="Bold"/>

@@ -72,14 +72,14 @@ public partial class ManageUsersViewModel : ObservableRecipient, INavigationAwar
     // Filter options
     public ObservableCollection<string> RoleOptions { get; } = new()
     {
-        "Tất cả",
+        "All",
         "ADMIN",
         "USER"
     };
 
     public ObservableCollection<string> StatusOptions { get; } = new()
     {
-        "Tất cả",
+        "All",
         "ACTIVE",
         "LOCKED"
     };
@@ -97,8 +97,8 @@ public partial class ManageUsersViewModel : ObservableRecipient, INavigationAwar
         try
         {
             // Parse filter values
-            string? roleFilter = SelectedRole == "Tất cả" ? null : SelectedRole;
-            string? statusFilter = SelectedStatus == "Tất cả" ? null : SelectedStatus;
+            string? roleFilter = SelectedRole == "All" ? null : SelectedRole;
+            string? statusFilter = SelectedStatus == "All" ? null : SelectedStatus;
 
             var result = await _getUsersUseCase.ExecuteAsync(
                 page: CurrentPage,

@@ -31,11 +31,11 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     private readonly IMovieApiService _movieApiService;
     private readonly ISessionStateService _sessionService;
 
-    // Thuộc tính lưu thông báo lỗi cụ thể từ API
+    // Property to hold specific error message from API
     [ObservableProperty]
     private string _errorMessage;
 
-    // Thuộc tính kiểm tra trạng thái thành công/thất bại
+    // Property to check success/failure status
     [ObservableProperty]
     private bool _isSuccess;
 
@@ -243,7 +243,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
         {
             FilterGenres.Clear();
             // Add empty option for "All genres"
-            FilterGenres.Add(new GenreResult { Id = 0, Name = "Tất cả thể loại" });
+            FilterGenres.Add(new GenreResult { Id = 0, Name = "All Genres" });
             foreach (var item in apiResult.Value)
             {
                 FilterGenres.Add(item);
@@ -561,7 +561,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     #region Import Excel Methods
 
     /// <summary>
-    /// Đọc file Excel và trả về danh sách CreateMovieCommand
+    /// Read Excel file and return list of CreateMovieCommand
     /// Columns: Title | Description | ReleaseYear | PosterUrl | TrailerUrl | MovieUrl | BannerUrl
     /// </summary>
     public List<CreateMovieCommand> ReadMoviesFromExcel(string filePath)
@@ -616,7 +616,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     }
 
     /// <summary>
-    /// Import movies từ danh sách CreateMovieCommand (gọi API tuần tự)
+    /// Import movies from CreateMovieCommand list (call API sequentially)
     /// </summary>
     public async Task ImportMoviesAsync(List<CreateMovieCommand> movies)
     {
@@ -628,14 +628,14 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
         ImportSuccessCount = 0;
         ImportFailedCount = 0;
         ImportProgress = 0;
-        ImportStatusMessage = "Đang import...";
+        ImportStatusMessage = "Importing...";
 
         try
         {
             for (int i = 0; i < movies.Count; i++)
             {
                 ImportCurrentIndex = i + 1;
-                ImportStatusMessage = $"Đang import phim {ImportCurrentIndex}/{ImportTotalCount}: {movies[i].Title}";
+                ImportStatusMessage = $"Importing movie {ImportCurrentIndex}/{ImportTotalCount}: {movies[i].Title}";
                 ImportProgress = (double)ImportCurrentIndex / ImportTotalCount * 100;
 
                 var result = await _createMovieUseCase.ExecuteAsync(movies[i]);
@@ -651,22 +651,22 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
                 }
             }
 
-            ImportStatusMessage = $"Hoàn tất! Thành công: {ImportSuccessCount}, Thất bại: {ImportFailedCount}";
+            ImportStatusMessage = $"Completed! Success: {ImportSuccessCount}, Failed: {ImportFailedCount}";
         }
         catch (Exception ex)
         {
-            ImportStatusMessage = $"Lỗi: {ex.Message}";
+            ImportStatusMessage = $"Error: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"[Import Error] {ex.Message}");
         }
         finally
         {
             IsImporting = false;
-            await LoadMoviesAsync(); // Reload danh sách sau khi import
+            await LoadMoviesAsync(); // Reload list after import
         }
     }
 
     /// <summary>
-    /// Reset trạng thái import
+    /// Reset import state
     /// </summary>
     public void ResetImportState()
     {

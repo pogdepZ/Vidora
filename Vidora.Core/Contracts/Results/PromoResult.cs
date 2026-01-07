@@ -3,7 +3,7 @@
 namespace Vidora.Core.Contracts.Results;
 
 /// <summary>
-/// Result model cho Promo/Discount
+/// Result model for Promo/Discount
 /// GET /api/promos
 /// </summary>
 public class PromoResult
@@ -21,8 +21,8 @@ public class PromoResult
     // Computed properties
     public string DiscountTypeDisplay => DiscountType switch
     {
-        "fixed_amount" => "Cố định",
-        "percentage" => "Phần trăm",
+        "fixed_amount" => "Fixed",
+        "percentage" => "Percentage",
         _ => DiscountType
     };
 
@@ -34,7 +34,7 @@ public class PromoResult
 
     public string MaxDiscountDisplay => MaxDiscount.HasValue 
         ? $"{MaxDiscount.Value:N0} VND" 
-        : "Không giới hạn";
+        : "Unlimited";
 
     public string StartDateDisplay => StartDate.ToString("dd/MM/yyyy");
     public string EndDateDisplay => EndDate.ToString("dd/MM/yyyy");
@@ -42,6 +42,6 @@ public class PromoResult
 
     public bool IsActive => DateTime.UtcNow >= StartDate && DateTime.UtcNow <= EndDate;
 
-    public string StatusDisplay => IsActive ? "Đang hoạt động" : 
-        (DateTime.UtcNow < StartDate ? "Chưa bắt đầu" : "Đã hết hạn");
+    public string StatusDisplay => IsActive ? "Active" : 
+        (DateTime.UtcNow < StartDate ? "Not Started" : "Expired");
 }

@@ -37,13 +37,13 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Spacing="10">
-                <TextBlock Text="Quản lý người dùng"
+                <TextBlock Text="Manage Users"
                        FontSize="30"
                        FontWeight="SemiBold"/>
                 <TextBlock Foreground="Gray" FontSize="14">
-                    <Run Text="Tổng số: "/>
+                    <Run Text="Total: "/>
                     <Run Text="{x:Bind ViewModel.TotalItems, Mode=OneWay}" FontWeight="SemiBold"/>
-                    <Run Text=" người dùng"/>
+                    <Run Text=" users"/>
                 </TextBlock>
             </StackPanel>
         </Grid>
@@ -66,7 +66,7 @@
 
                 <!-- Search by FullName/Email/Username -->
                 <AutoSuggestBox Grid.Column="0"
-                            PlaceholderText="Tìm kiếm theo tên, email, username..."
+                            PlaceholderText="Search by name, email, username..."
                             QueryIcon="Find"
                             MinWidth="300"
                             VerticalAlignment="Center"
@@ -77,7 +77,7 @@
                 <ComboBox Grid.Column="1"
                           Margin="16,0,0,0"
                           MinWidth="150"
-                          PlaceholderText="Trạng thái"
+                          PlaceholderText="Status"
                           VerticalAlignment="Center"
                           ItemsSource="{x:Bind ViewModel.StatusOptions}"
                           SelectedItem="{x:Bind ViewModel.SelectedStatus, Mode=TwoWay}"/>
@@ -90,7 +90,7 @@
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <FontIcon Glyph="&#xE721;" FontSize="14"/>
-                        <TextBlock Text="Tìm kiếm"/>
+                        <TextBlock Text="Search"/>
                     </StackPanel>
                 </Button>
 
@@ -99,10 +99,10 @@
                         Margin="8,0,0,0"
                         Command="{x:Bind ViewModel.ClearFiltersCommand}"
                         VerticalAlignment="Center"
-                        ToolTipService.ToolTip="Xóa bộ lọc">
+                        ToolTipService.ToolTip="Clear Filters">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <FontIcon Glyph="&#xE894;" FontSize="14"/>
-                        <TextBlock Text="Xóa lọc"/>
+                        <TextBlock Text="Clear"/>
                     </StackPanel>
                 </Button>
             </Grid>
@@ -137,12 +137,12 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="NGƯỜI DÙNG" FontWeight="Bold" Foreground="Gray"/>
+                    <TextBlock Grid.Column="0" Text="USER" FontWeight="Bold" Foreground="Gray"/>
                     <TextBlock Grid.Column="1" Text="EMAIL" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="2" Text="VAI TRÒ" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="3" Text="TRẠNG THÁI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="4" Text="NGÀY TẠO" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="5" Text="HÀNH ĐỘNG" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="ROLE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="STATUS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="CREATED DATE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="5" Text="ACTIONS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
                 </Grid>
 
                 <!-- ===== LIST ===== -->
@@ -234,13 +234,13 @@
                                     <Button Click="OnViewDetailClick" 
                                         Background="Transparent" 
                                         BorderThickness="0"
-                                        ToolTipService.ToolTip="Xem chi tiết">
+                                        ToolTipService.ToolTip="View Details">
                                         <FontIcon Glyph="&#xE890;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" FontSize="16"/>
                                     </Button>
                                     <Button Click="OnToggleStatusClick" 
                                         Background="Transparent" 
                                         BorderThickness="0"
-                                        ToolTipService.ToolTip="Khóa/Mở khóa">
+                                        ToolTipService.ToolTip="Lock/Unlock">
                                         <FontIcon Glyph="&#xE72E;" Foreground="Orange" FontSize="16"/>
                                     </Button>
                                 </StackPanel>
@@ -266,7 +266,7 @@
                         IsEnabled="{x:Bind ViewModel.CanGoPrev, Mode=OneWay}" />
 
                     <TextBlock VerticalAlignment="Center">
-                        <Run Text="Trang "/>
+                        <Run Text="Page "/>
                         <Run Text="{x:Bind ViewModel.CurrentPage, Mode=OneWay}" FontWeight="Bold"/>
                         <Run Text=" / "/>
                         <Run Text="{x:Bind ViewModel.TotalPages, Mode=OneWay}" FontWeight="Bold"/>

@@ -1,7 +1,7 @@
 namespace Vidora.Core.Contracts.Results;
 
 /// <summary>
-/// Result model cho Subscription Plan
+/// Result model for Subscription Plan
 /// GET /api/subscriptions/plans
 /// </summary>
 public class SubscriptionPlanResult
@@ -14,5 +14,5 @@ public class SubscriptionPlanResult
 
     // Computed properties
     public string PriceDisplay => $"{Price:N0} VND";
-    public string DurationsDisplay => $"{Durations} ngày";
+    public string DurationsDisplay => $"{Durations} days";
 }
