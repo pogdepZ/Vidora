@@ -1,8 +1,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using System;
 using System.Threading.Tasks;
 using Vidora.Core.Contracts.Commands;
+using Vidora.Core.Contracts.Results;
 using Vidora.Presentation.Gui.ViewModels;
 
 namespace Vidora.Presentation.Gui.Views;
@@ -14,6 +16,9 @@ public sealed partial class ManageSubscriptionsPage : Page
     public ManageSubscriptionsPage()
     {
         InitializeComponent();
+
+        // Set default selection for status filter
+        OrderStatusComboBox.SelectedIndex = 0;
     }
 
     private int _notificationId = 0;
@@ -39,6 +44,42 @@ public sealed partial class ManageSubscriptionsPage : Page
             }
         }
     }
+
+    #region Order Search and Filter Handlers
+
+    private async void OnOrderSearchKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            await ViewModel.SearchOrdersCommand.ExecuteAsync(null);
+        }
+    }
+
+    private async void OnOrderStatusSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ComboBox comboBox && comboBox.SelectedItem is OrderStatusOption option)
+        {
+            await ViewModel.FilterOrdersByStatusCommand.ExecuteAsync(option.Value);
+        }
+    }
+
+    private async void OnOrderPlanSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ComboBox comboBox)
+        {
+            if (comboBox.SelectedItem is SubscriptionPlanResult plan)
+            {
+                await ViewModel.FilterOrdersByPlanCommand.ExecuteAsync(plan.PlanId);
+            }
+            else
+            {
+                // Clear plan filter when nothing selected
+                await ViewModel.FilterOrdersByPlanCommand.ExecuteAsync(null);
+            }
+        }
+    }
+
+    #endregion
 
     private async void OnAddPromoClick(object sender, RoutedEventArgs e)
     {

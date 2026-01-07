@@ -11,4 +11,9 @@
     <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverterInvert" Invert="True"/>
 
     <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+
+    <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+    <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverterInvert" Invert="True"/>
+
+    <converters:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter"/>
 </ResourceDictionary>

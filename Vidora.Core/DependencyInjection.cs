@@ -28,10 +28,11 @@ public static class DependencyInjection
         services.AddTransient<GetUserDetailUseCase>();
         services.AddTransient<ToggleUserStatusUseCase>();
 
-        // Subscription/Promo UseCases
+        // Subscription/Promo/Order UseCases
         services.AddTransient<GetSubscriptionPlansUseCase>();
         services.AddTransient<GetPromosUseCase>();
         services.AddTransient<CreatePromoUseCase>();
+        services.AddTransient<GetOrdersUseCase>();
 
         // Services
         services.AddSingleton<ISessionStateService, SessionStateService>();

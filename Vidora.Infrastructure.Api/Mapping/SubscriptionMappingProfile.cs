@@ -23,5 +23,18 @@ public class SubscriptionMappingProfile : Profile
 
         // Map CreatePromoCommand -> CreatePromoRequestDto
         CreateMap<CreatePromoCommand, CreatePromoRequestDto>();
+
+        // Map OrderItemDto -> OrderResult (flat structure)
+        CreateMap<OrderItemDto, OrderResult>()
+            .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.FullName))
+            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.Email));
+
+        // Map OrderPaginationResponseDto -> OrderPaginationResult
+        CreateMap<OrderPaginationResponseDto, OrderPaginationResult>()
+            .ForCtorParam("Orders", opt => opt.MapFrom(src => src.Data))
+            .ForCtorParam("Pagination", opt => opt.MapFrom(src => src.Pagination));
+
+        // Map PaginationDto -> PaginationResult (if not already mapped elsewhere)
+        CreateMap<PaginationDto, PaginationResult>();
     }
 }

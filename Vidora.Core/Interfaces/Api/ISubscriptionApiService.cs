@@ -7,7 +7,7 @@ using Vidora.Core.Contracts.Results;
 namespace Vidora.Core.Interfaces.Api;
 
 /// <summary>
-/// Interface cho Subscription/Promo API Service
+/// Interface cho Subscription/Promo/Order API Service
 /// </summary>
 public interface ISubscriptionApiService
 {
@@ -28,4 +28,22 @@ public interface ISubscriptionApiService
     /// POST /api/promos
     /// </summary>
     Task<Result<PromoResult>> CreatePromoAsync(string token, CreatePromoCommand command);
+
+    /// <summary>
+    /// L?y danh sách Orders có pagination và filter
+    /// GET /api/orders/all
+    /// </summary>
+    /// <param name="token">Access token</param>
+    /// <param name="page">S? trang</param>
+    /// <param name="limit">S? items m?i trang</param>
+    /// <param name="search">Tìm ki?m theo user.full_name, user.email, plan.name</param>
+    /// <param name="status">Filter theo tr?ng thái: COMPLETED, PENDING, FAILED</param>
+    /// <param name="planId">Filter theo planId</param>
+    Task<Result<OrderPaginationResult>> GetOrdersAsync(
+        string token,
+        int page,
+        int limit,
+        string? search = null,
+        string? status = null,
+        int? planId = null);
 }

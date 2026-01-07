@@ -37,7 +37,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Spacing="10">
-                <TextBlock Text="Quản lý Subscriptions &amp; Promos"
+                <TextBlock Text="Quản lý Subscriptions, Promos &amp; Orders"
                            FontSize="30"
                            FontWeight="SemiBold"/>
                 <TextBlock Foreground="Gray" FontSize="14">
@@ -45,6 +45,8 @@
                     <Run Text="{x:Bind ViewModel.Plans.Count, Mode=OneWay}" FontWeight="SemiBold"/>
                     <Run Text=" | Mã giảm giá: "/>
                     <Run Text="{x:Bind ViewModel.TotalPromos, Mode=OneWay}" FontWeight="SemiBold"/>
+                    <Run Text=" | Đơn hàng: "/>
+                    <Run Text="{x:Bind ViewModel.TotalOrders, Mode=OneWay}" FontWeight="SemiBold"/>
                 </TextBlock>
             </StackPanel>
 
@@ -108,6 +110,7 @@
                                                 CornerRadius="8"
                                                 Padding="20"
                                                 MinWidth="250"
+                                                HorizontalAlignment="Stretch"
                                                 BorderBrush="{ThemeResource SystemAccentColorLight2}"
                                                 BorderThickness="1">
                                             <StackPanel Spacing="12">
@@ -139,11 +142,251 @@
                     </StackPanel>
                 </Border>
 
+                <!-- ===== SECTION: ORDERS ===== -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="12"
+                        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                        BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="48"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Section Header -->
+                        <Grid Grid.Row="0" Padding="24,24,24,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Đơn hàng" FontSize="20" FontWeight="SemiBold"/>
+                                <TextBlock Text="Danh sách các đơn hàng đăng ký gói" Foreground="Gray" FontSize="13"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" 
+                                    Command="{x:Bind ViewModel.LoadOrdersCommand}"
+                                    ToolTipService.ToolTip="Làm mới">
+                                <FontIcon Glyph="&#xE72C;" FontSize="14"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Search and Filter Bar -->
+                        <Grid Grid.Row="1" Padding="24,0,24,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Search Box -->
+                            <TextBox Grid.Column="0"
+                                     PlaceholderText="Tìm kiếm theo tên, email, gói..."
+                                     Text="{x:Bind ViewModel.OrderSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     
+                                     HorizontalAlignment="Stretch"
+                                     KeyDown="OnOrderSearchKeyDown"/>
+
+                            <!-- Status Filter -->
+                            <ComboBox Grid.Column="1"
+                                      x:Name="OrderStatusComboBox"
+                                      Header="Trạng thái"
+                                      Margin="16,0,0,0"
+                                      MinWidth="150"
+                                      ItemsSource="{x:Bind ViewModel.OrderStatusOptions}"
+                                      DisplayMemberPath="DisplayText"
+                                      SelectedValuePath="Value"
+                                      SelectionChanged="OnOrderStatusSelectionChanged"/>
+
+                            <!-- Plan Filter -->
+                            <ComboBox Grid.Column="2"
+                                      x:Name="OrderPlanComboBox"
+                                      Header="Gói đăng ký"
+                                      Margin="16,0,0,0"
+                                      MinWidth="150"
+                                      ItemsSource="{x:Bind ViewModel.Plans, Mode=OneWay}"
+                                      DisplayMemberPath="Name"
+                                      SelectedValuePath="PlanId"
+                                      PlaceholderText="Tất cả"
+                                      SelectionChanged="OnOrderPlanSelectionChanged"/>
+
+                            <!-- Clear Filters Button -->
+                            <Button Grid.Column="3"
+                                    Margin="16,20,0,0"
+                                    Command="{x:Bind ViewModel.ClearOrderFiltersCommand}"
+                                    ToolTipService.ToolTip="Xóa bộ lọc">
+                                <FontIcon Glyph="&#xE711;" FontSize="12"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Table Header -->
+                        <Grid Grid.Row="2"
+                              Padding="24,10"
+                              BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                              BorderThickness="0,1,0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="1.2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="MÃ ĐƠN" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock Grid.Column="1" Text="KHÁCH HÀNG" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock Grid.Column="2" Text="GÓI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="GIÁ GỐC" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="THANH TOÁN" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="TRẠNG THÁI" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="NGÀY TT" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                        </Grid>
+
+                        <!-- Orders List -->
+                        <Grid Grid.Row="3" MinHeight="200">
+                            <ProgressRing IsActive="{x:Bind ViewModel.IsLoadingOrders, Mode=OneWay}"
+                                          Visibility="{x:Bind ViewModel.IsLoadingOrders, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+
+                            <!-- Empty State -->
+                            <StackPanel Visibility="{x:Bind ViewModel.IsLoadingOrders, Converter={StaticResource BoolToVisibilityConverterInvert}, Mode=OneWay}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="Không có đơn hàng nào"
+                                           Foreground="Gray"
+                                           FontSize="14"
+                                           Visibility="{x:Bind ViewModel.Orders.Count, Mode=OneWay, Converter={StaticResource IntToVisibilityConverterInvert}}"/>
+                            </StackPanel>
+                            
+                            <ListView ItemsSource="{x:Bind ViewModel.Orders, Mode=OneWay}"
+                                      SelectionMode="None"
+                                      Padding="0"
+                                      Visibility="{x:Bind ViewModel.IsLoadingOrders, Converter={StaticResource BoolToVisibilityConverterInvert}, Mode=OneWay}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="results:OrderResult">
+                                        <Grid Padding="24,14"
+                                              BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                                              BorderThickness="0,0,0,1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Order Code -->
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{x:Bind OrderCode}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"/>
+
+                                            <!-- User Info -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{x:Bind UserFullName}"
+                                                           FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{x:Bind UserEmail}"
+                                                           FontSize="11"
+                                                           Foreground="Gray"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+
+                                            <!-- Plan Name -->
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{x:Bind PlanName}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       FontSize="12"/>
+
+                                            <!-- Amount -->
+                                            <TextBlock Grid.Column="3"
+                                                       Text="{x:Bind AmountDisplay}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       FontSize="12"
+                                                       Foreground="Gray"/>
+
+                                            <!-- Final Amount -->
+                                            <TextBlock Grid.Column="4"
+                                                       Text="{x:Bind FinalAmountDisplay}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                                       FontWeight="SemiBold"/>
+
+                                            <!-- Status -->
+                                            <Border Grid.Column="5"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Padding="10,4"
+                                                    CornerRadius="4"
+                                                    Background="{x:Bind StatusColor, Converter={StaticResource StatusToBackgroundConverter}}">
+                                                <TextBlock Text="{x:Bind StatusDisplay}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+
+                                            <!-- Paid At -->
+                                            <TextBlock Grid.Column="6"
+                                                       Text="{x:Bind PaidAtDisplay}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       FontSize="11"
+                                                       Foreground="Gray"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+
+                        <!-- Pagination -->
+                        <StackPanel Grid.Row="4"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Spacing="12"
+                                    Padding="24">
+                            <Button Content="◀" 
+                                    Command="{x:Bind ViewModel.ChangeOrderPageCommand}" 
+                                    CommandParameter="Prev"
+                                    IsEnabled="{x:Bind ViewModel.CanGoOrderPrev, Mode=OneWay}"/>
+
+                            <TextBlock VerticalAlignment="Center">
+                                <Run Text="Trang "/>
+                                <Run Text="{x:Bind ViewModel.OrderCurrentPage, Mode=OneWay}" FontWeight="Bold"/>
+                                <Run Text=" / "/>
+                                <Run Text="{x:Bind ViewModel.OrderTotalPages, Mode=OneWay}" FontWeight="Bold"/>
+                            </TextBlock>
+
+                            <Button Content="▶" 
+                                    Command="{x:Bind ViewModel.ChangeOrderPageCommand}" 
+                                    CommandParameter="Next"
+                                    IsEnabled="{x:Bind ViewModel.CanGoOrderNext, Mode=OneWay}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
                 <!-- ===== SECTION: PROMO CODES ===== -->
                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         CornerRadius="12"
                         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
                         BorderThickness="1">
+                    <!-- ...existing promo codes section... -->
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

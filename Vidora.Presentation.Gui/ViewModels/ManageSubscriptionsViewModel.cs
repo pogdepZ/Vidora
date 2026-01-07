@@ -15,15 +15,18 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
     private readonly GetSubscriptionPlansUseCase _getPlansUseCase;
     private readonly GetPromosUseCase _getPromosUseCase;
     private readonly CreatePromoUseCase _createPromoUseCase;
+    private readonly GetOrdersUseCase _getOrdersUseCase;
 
     public ManageSubscriptionsViewModel(
         GetSubscriptionPlansUseCase getPlansUseCase,
         GetPromosUseCase getPromosUseCase,
-        CreatePromoUseCase createPromoUseCase)
+        CreatePromoUseCase createPromoUseCase,
+        GetOrdersUseCase getOrdersUseCase)
     {
         _getPlansUseCase = getPlansUseCase;
         _getPromosUseCase = getPromosUseCase;
         _createPromoUseCase = createPromoUseCase;
+        _getOrdersUseCase = getOrdersUseCase;
 
         // Initialize NewPromo with default values
         ResetNewPromo();
@@ -49,6 +52,28 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
 
     [ObservableProperty]
     private bool _isLoadingPromos;
+
+    #endregion
+
+    #region Properties - Orders
+
+    [ObservableProperty]
+    private ObservableCollection<OrderResult> _orders = new();
+
+    [ObservableProperty]
+    private PaginationResult _orderPagination = new(1, 10, 0, 1);
+
+    [ObservableProperty]
+    private bool _isLoadingOrders;
+
+    [ObservableProperty]
+    private string _orderSearchText = string.Empty;
+
+    [ObservableProperty]
+    private string? _selectedOrderStatus;
+
+    [ObservableProperty]
+    private int? _selectedOrderPlanId;
 
     #endregion
 
@@ -93,7 +118,7 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
 
     #endregion
 
-    #region Computed Properties - Pagination
+    #region Computed Properties - Promo Pagination
 
     public int CurrentPage => PromoPagination.Page;
     public int TotalPages => PromoPagination.TotalPages;
@@ -104,12 +129,31 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
 
     #endregion
 
+    #region Computed Properties - Order Pagination
+
+    public int OrderCurrentPage => OrderPagination.Page;
+    public int OrderTotalPages => OrderPagination.TotalPages;
+    public bool CanGoOrderPrev => OrderPagination.HasPrev;
+    public bool CanGoOrderNext => OrderPagination.HasNext;
+    public int OrderItemsCount => OrderPagination.Count;
+    public int TotalOrders => OrderPagination.Total;
+
+    #endregion
+
     #region Options
 
     public ObservableCollection<DiscountTypeOption> DiscountTypeOptions { get; } = new()
     {
         new DiscountTypeOption("fixed_amount", "Giảm cố định (VND)"),
         new DiscountTypeOption("percentage", "Phần trăm (%)")
+    };
+
+    public ObservableCollection<OrderStatusOption> OrderStatusOptions { get; } = new()
+    {
+        new OrderStatusOption(null, "Tất cả"),
+        new OrderStatusOption("COMPLETED", "Hoàn thành"),
+        new OrderStatusOption("PENDING", "Đang chờ"),
+        new OrderStatusOption("FAILED", "Thất bại")
     };
 
     #endregion
@@ -191,6 +235,50 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
     }
 
     [RelayCommand]
+    private async Task LoadOrdersAsync()
+    {
+        if (IsLoadingOrders) return;
+        IsLoadingOrders = true;
+        ErrorMessage = string.Empty;
+
+        try
+        {
+            var search = string.IsNullOrWhiteSpace(OrderSearchText) ? null : OrderSearchText.Trim();
+            var result = await _getOrdersUseCase.ExecuteAsync(
+                OrderCurrentPage,
+                10,
+                search,
+                SelectedOrderStatus,
+                SelectedOrderPlanId);
+
+            if (result.IsSuccess)
+            {
+                Orders.Clear();
+                foreach (var order in result.Value.Orders)
+                {
+                    Orders.Add(order);
+                }
+                OrderPagination = result.Value.Pagination;
+            }
+            else
+            {
+                ErrorMessage = result.Error;
+                System.Diagnostics.Debug.WriteLine($"[LoadOrdersAsync] Error: {result.Error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            System.Diagnostics.Debug.WriteLine($"[LoadOrdersAsync] Exception: {ex.Message}");
+        }
+        finally
+        {
+            IsLoadingOrders = false;
+            NotifyOrderPaginationPropertiesChanged();
+        }
+    }
+
+    [RelayCommand]
     private async Task ChangePageAsync(string direction)
     {
         if (IsLoadingPromos) return;
@@ -205,6 +293,59 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
             PromoPagination = PromoPagination with { Page = targetPage };
             await LoadPromosAsync();
         }
+    }
+
+    [RelayCommand]
+    private async Task ChangeOrderPageAsync(string direction)
+    {
+        if (IsLoadingOrders) return;
+
+        int targetPage = OrderCurrentPage;
+
+        if (direction == "Next" && CanGoOrderNext) targetPage++;
+        else if (direction == "Prev" && CanGoOrderPrev) targetPage--;
+
+        if (targetPage != OrderCurrentPage)
+        {
+            OrderPagination = OrderPagination with { Page = targetPage };
+            await LoadOrdersAsync();
+        }
+    }
+
+    [RelayCommand]
+    private async Task SearchOrdersAsync()
+    {
+        // Reset to page 1 when searching
+        OrderPagination = OrderPagination with { Page = 1 };
+        await LoadOrdersAsync();
+    }
+
+    [RelayCommand]
+    private async Task FilterOrdersByStatusAsync(string? status)
+    {
+        SelectedOrderStatus = status;
+        // Reset to page 1 when filtering
+        OrderPagination = OrderPagination with { Page = 1 };
+        await LoadOrdersAsync();
+    }
+
+    [RelayCommand]
+    private async Task FilterOrdersByPlanAsync(int? planId)
+    {
+        SelectedOrderPlanId = planId;
+        // Reset to page 1 when filtering
+        OrderPagination = OrderPagination with { Page = 1 };
+        await LoadOrdersAsync();
+    }
+
+    [RelayCommand]
+    private async Task ClearOrderFiltersAsync()
+    {
+        OrderSearchText = string.Empty;
+        SelectedOrderStatus = null;
+        SelectedOrderPlanId = null;
+        OrderPagination = OrderPagination with { Page = 1 };
+        await LoadOrdersAsync();
     }
 
     #endregion
@@ -291,13 +432,23 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
         OnPropertyChanged(nameof(TotalPromos));
     }
 
+    private void NotifyOrderPaginationPropertiesChanged()
+    {
+        OnPropertyChanged(nameof(OrderCurrentPage));
+        OnPropertyChanged(nameof(OrderTotalPages));
+        OnPropertyChanged(nameof(CanGoOrderPrev));
+        OnPropertyChanged(nameof(CanGoOrderNext));
+        OnPropertyChanged(nameof(OrderItemsCount));
+        OnPropertyChanged(nameof(TotalOrders));
+    }
+
     #endregion
 
     #region Navigation
 
     public async Task OnNavigatedToAsync(object parameter)
     {
-        await Task.WhenAll(LoadPlansAsync(), LoadPromosAsync());
+        await Task.WhenAll(LoadPlansAsync(), LoadPromosAsync(), LoadOrdersAsync());
     }
 
     public Task OnNavigatedFromAsync()
@@ -312,3 +463,8 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
 /// Helper class cho ComboBox DiscountType
 /// </summary>
 public record DiscountTypeOption(string Value, string DisplayText);
+
+/// <summary>
+/// Helper class cho ComboBox OrderStatus
+/// </summary>
+public record OrderStatusOption(string? Value, string DisplayText);

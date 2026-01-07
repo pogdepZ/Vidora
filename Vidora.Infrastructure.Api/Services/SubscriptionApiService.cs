@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using Vidora.Core.Contracts.Commands;
 using Vidora.Core.Contracts.Results;
 using Vidora.Core.Interfaces.Api;
@@ -125,6 +126,57 @@ public class SubscriptionApiService : ISubscriptionApiService
         {
             System.Diagnostics.Debug.WriteLine($"[CreatePromoAsync] Error: {ex.Message}");
             return Result.Failure<PromoResult>($"L?i: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<OrderPaginationResult>> GetOrdersAsync(
+        string token,
+        int page,
+        int limit,
+        string? search = null,
+        string? status = null,
+        int? planId = null)
+    {
+        try
+        {
+            // Build query string
+            var queryParams = new List<string>
+            {
+                $"page={page}",
+                $"limit={limit}"
+            };
+
+            if (!string.IsNullOrWhiteSpace(search))
+                queryParams.Add($"search={HttpUtility.UrlEncode(search)}");
+
+            if (!string.IsNullOrWhiteSpace(status))
+                queryParams.Add($"status={status}");
+
+            if (planId.HasValue)
+                queryParams.Add($"planId={planId.Value}");
+
+            var query = $"api/orders/all?{string.Join("&", queryParams)}";
+
+            var response = await _apiClient.GetAsync(query, token);
+            var rawJson = await response.Content.ReadAsStringAsync();
+
+            System.Diagnostics.Debug.WriteLine($"[GetOrdersAsync] Raw JSON: {rawJson}");
+
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure<OrderPaginationResult>("Không th? t?i danh sách ??n hàng.");
+
+            var responseDto = JsonSerializer.Deserialize<OrderPaginationResponseDto>(rawJson, _jsonOptions);
+
+            if (responseDto == null || !responseDto.Success)
+                return Result.Failure<OrderPaginationResult>("D? li?u t? server không h?p l?.");
+
+            var result = _mapper.Map<OrderPaginationResult>(responseDto);
+            return Result.Success(result);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[GetOrdersAsync] Error: {ex.Message}");
+            return Result.Failure<OrderPaginationResult>($"L?i: {ex.Message}");
         }
     }
 }
