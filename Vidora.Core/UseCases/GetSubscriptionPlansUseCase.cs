@@ -30,6 +30,6 @@ public class GetSubscriptionPlansUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<IReadOnlyList<SubscriptionPlanResult>>("Phiên ??ng nh?p không h?p l?.");
 
-        return await _subscriptionApiService.GetPlansAsync(token);
+        return await _subscriptionApiService.GetPlansAsync();
     }
 }

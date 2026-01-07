@@ -45,12 +45,12 @@ public class CreateMovieUseCase
             castAndCrew = castPayload
         };
 
-        return await _movieApiService.CreateMovieAsync(token, finalData);
+        return await _movieApiService.CreateMovieAsync(finalData);
     }
 
-    public async Task<Result<List<Genre>>> GetGenresAsync(string token)
+    public async Task<Result<List<Genre>>> GetGenresAsync()
     {
-        var result = await _movieApiService.GetGenresAsync(token);
+        var result = await _movieApiService.GetGenresAsync();
 
         return result.Map(genreResults => genreResults.Select(dto => new Genre
         {

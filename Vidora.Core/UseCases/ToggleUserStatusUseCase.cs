@@ -31,6 +31,6 @@ public class ToggleUserStatusUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<string>("Phiên ??ng nh?p không h?p l?.");
 
-        return await _userApiService.ToggleUserStatusAsync(token, userId);
+        return await _userApiService.ToggleUserStatusAsync(userId);
     }
 }

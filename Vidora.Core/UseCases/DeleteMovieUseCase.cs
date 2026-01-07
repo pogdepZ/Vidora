@@ -29,6 +29,6 @@ public class DeleteMovieUseCase
             return Result.Failure<bool>("ID phim không hợp lệ.");
 
         // 2. Gọi API Service thực hiện toggle delete
-        return await _movieApiService.ToggleDeleteMovieAsync(token, movieId);
+        return await _movieApiService.ToggleDeleteMovieAsync(movieId);
     }
 }

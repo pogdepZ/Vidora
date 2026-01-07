@@ -28,7 +28,7 @@ namespace Vidora.Core.UseCases
             var token = _sessionService.CurrentSession?.AccessToken?.Token;
             if (string.IsNullOrEmpty(token)) return Result.Failure<MoviePaginationResult>("Phiên đăng nhập hết hạn.");
 
-            return await _movieApiService.GetAdminMoviesAsync(token, page, limit, title, genreId, releaseYear);
+            return await _movieApiService.GetAdminMoviesAsync(page, limit, title, genreId, releaseYear);
         }
     }
 }

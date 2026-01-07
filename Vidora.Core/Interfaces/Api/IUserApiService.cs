@@ -14,7 +14,6 @@ public interface IUserApiService
     /// GET /api/users
     /// </summary>
     Task<Result<UserPaginationResult>> GetUsersAsync(
-        string token,
         int page,
         int limit,
         string? search = null,
@@ -27,11 +26,10 @@ public interface IUserApiService
     /// L?y chi ti?t user bao g?m subscriptions và orders
     /// GET /api/users/{id}
     /// </summary>
-    Task<Result<UserDetailResult>> GetUserDetailAsync(string token, int userId);
-
+    Task<Result<UserDetailResult>> GetUserDetailAsync(int userId);
     /// <summary>
     /// Khóa/M? khóa user (Toggle Status)
     /// PUT /api/users/{id}/status
     /// </summary>
-    Task<Result<string>> ToggleUserStatusAsync(string token, int userId);
+    Task<Result<string>> ToggleUserStatusAsync(int userId);
 }

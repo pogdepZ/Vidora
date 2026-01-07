@@ -11,24 +11,23 @@ namespace Vidora.Core.Interfaces.Api
     public interface IMovieApiService
     {
         // --- Quản lý Thể loại (Genres) ---
-        Task<Result<List<GenreResult>>> GetGenresAsync(string token);
-        Task<Result<GenreResult>> CreateGenreAsync(string token, string name);
+        Task<Result<List<GenreResult>>> GetGenresAsync();
+        Task<Result<GenreResult>> CreateGenreAsync(string name);
 
         // --- Quản lý Diễn viên (Actors) ---
-        Task<Result<List<MemberResult>>> GetMembersAsync(string token);
-        Task<Result<MemberResult>> CreateActorAsync(string token, string name);
+        Task<Result<List<MemberResult>>> GetMembersAsync();
+        Task<Result<MemberResult>> CreateActorAsync(string name);
 
         // --- Quản lý Phim (Movies) ---
-        Task<Result<bool>> CreateMovieAsync(string token, object movieData);
-        Task<Result<bool>> UpdateMovieAsync(string token, int movieId, object movieData);
+        Task<Result<bool>> CreateMovieAsync(object movieData);
+        Task<Result<bool>> UpdateMovieAsync(int movieId, object movieData);
         Task<Result<MoviePaginationResult>> GetAdminMoviesAsync(
-            string token,
             int page,
             int limit,
             string? title = null,
             int? genreId = null,
             int? releaseYear = null);
-        Task<Result<bool>> ToggleDeleteMovieAsync(string token, int movieId);
-        Task<Result<MovieDetailResult>> GetMovieDetailAsync(string token, int movieId);
+        Task<Result<bool>> ToggleDeleteMovieAsync(int movieId);
+        Task<Result<MovieDetailResult>> GetMovieDetailAsync(int movieId);
     }
 }

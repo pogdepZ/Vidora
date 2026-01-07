@@ -38,6 +38,6 @@ public class UpdateMovieUseCase
             castAndCrew = command.CastAndCrew.Select(c => new { memberId = c.MemberId, role = c.Role }).ToList()
         };
 
-        return await _movieApiService.UpdateMovieAsync(token, command.MovieId, movieData);
+        return await _movieApiService.UpdateMovieAsync(command.MovieId, movieData);
     }
 }

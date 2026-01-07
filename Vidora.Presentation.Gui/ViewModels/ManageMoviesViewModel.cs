@@ -237,7 +237,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     public async Task LoadFilterGenresAsync()
     {
         var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
-        var apiResult = await _movieApiService.GetGenresAsync(token);
+        var apiResult = await _movieApiService.GetGenresAsync();
 
         if (apiResult.IsSuccess)
         {
@@ -460,7 +460,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     public async Task LoadAvailableGenresAsync()
     {
         var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
-        var apiResult = await _movieApiService.GetGenresAsync(token);
+        var apiResult = await _movieApiService.GetGenresAsync();
 
         if (apiResult.IsSuccess)
         {
@@ -488,7 +488,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     public async Task LoadAvailableMembersAsync()
     {
         var token = _sessionService?.CurrentSession?.AccessToken?.Token?.Trim('"');
-        var result = await _movieApiService.GetMembersAsync(token);
+        var result = await _movieApiService.GetMembersAsync();
         if (result.IsSuccess)
         {
             AvailableMembers.Clear();

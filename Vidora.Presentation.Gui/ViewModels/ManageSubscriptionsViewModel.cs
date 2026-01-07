@@ -377,7 +377,7 @@ public partial class ManageSubscriptionsViewModel : ObservableRecipient, INaviga
             if (result.IsSuccess)
             {
                 IsSuccess = true;
-                SuccessMessage = $"Promo code '{result.Value.Code}' created successfully!";
+                SuccessMessage = $"Promo code created successfully!";
 
                 // Reset form and reload list
                 ResetNewPromo();

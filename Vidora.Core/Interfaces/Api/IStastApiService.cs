@@ -10,6 +10,6 @@ namespace Vidora.Core.Interfaces.Api
 {
     public interface IStatsApiService
     {
-        Task<Result<AdminDashboardResult>> GetDashboardStatsAsync(string token);
+        Task<Result<AdminDashboardResult>> GetDashboardStatsAsync();
     }
 }

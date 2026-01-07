@@ -7,5 +7,7 @@ public record OrderData(
     decimal Amount,
     string PaymentMethodd,
     string Status,
+    string FullName,
+    string Email,
     DateTime CreatedAt
     );

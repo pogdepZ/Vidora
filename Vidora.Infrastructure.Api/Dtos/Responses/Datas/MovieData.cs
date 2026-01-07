@@ -15,6 +15,8 @@ public record MovieData(
     double? AvgRating,
     int? RatingCount,
     List<string>? genres,
+    List<GenreData>? Genres,
+    List<MemberData>? Actors,
     bool? IsDeleted
 );
 

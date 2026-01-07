@@ -34,8 +34,7 @@ public class GetUsersUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<UserPaginationResult>("Phiên ??ng nh?p không h?p l?.");
 
-        return await _userApiService.GetUsersAsync(
-            token, 
+        return await _userApiService.GetUsersAsync( 
             page, 
             limit, 
             search, 

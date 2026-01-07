@@ -4,6 +4,7 @@ using Vidora.Core.Contracts.Results;
 using Vidora.Infrastructure.Api.Dtos.Requests;
 using Vidora.Infrastructure.Api.Dtos.Responses;
 using Vidora.Infrastructure.Api.Dtos.Responses.Metas;
+using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
 
 namespace Vidora.Infrastructure.Api.Mapping;
 
@@ -15,7 +16,7 @@ public class SubscriptionMappingProfile : Profile
         CreateMap<SubscriptionPlanData, SubscriptionPlanResult>();
 
         // Map PromoItemDto -> PromoResult
-        CreateMap<PromoItemDto, PromoResult>();
+        CreateMap<PromoData, PromoResult>();
 
         // Map PromoResponseDto -> PromoPaginationResult
         CreateMap<PromoResponse, PromoPaginationResult>()

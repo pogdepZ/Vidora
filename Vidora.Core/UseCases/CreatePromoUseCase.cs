@@ -23,32 +23,32 @@ public class CreatePromoUseCase
         _sessionService = sessionService;
     }
 
-    public async Task<Result<PromoResult>> ExecuteAsync(CreatePromoCommand command)
+    public async Task<Result<bool>> ExecuteAsync(CreatePromoCommand command)
     {
         var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
 
         if (string.IsNullOrEmpty(token))
-            return Result.Failure<PromoResult>("Phiên ??ng nh?p không h?p l?.");
+            return Result.Failure<bool>("Phiên ??ng nh?p không h?p l?.");
 
         // Validation
         if (string.IsNullOrWhiteSpace(command.Code))
-            return Result.Failure<PromoResult>("Mã gi?m giá không ???c ?? tr?ng.");
+            return Result.Failure<bool>("Mã gi?m giá không ???c ?? tr?ng.");
 
         if (command.DiscountType != "fixed_amount" && command.DiscountType != "percentage")
-            return Result.Failure<PromoResult>("Lo?i gi?m giá không h?p l?.");
+            return Result.Failure<bool>("Lo?i gi?m giá không h?p l?.");
 
         if (command.Value <= 0)
-            return Result.Failure<PromoResult>("Giá tr? gi?m giá ph?i l?n h?n 0.");
+            return Result.Failure<bool>("Giá tr? gi?m giá ph?i l?n h?n 0.");
 
         if (command.DiscountType == "percentage" && command.Value > 100)
-            return Result.Failure<PromoResult>("Ph?n tr?m gi?m giá không ???c v??t quá 100%.");
+            return Result.Failure<bool>("Ph?n tr?m gi?m giá không ???c v??t quá 100%.");
 
         if (command.MinOrderValue < 0)
-            return Result.Failure<PromoResult>("Giá tr? ??n hàng t?i thi?u không h?p l?.");
+            return Result.Failure<bool>("Giá tr? ??n hàng t?i thi?u không h?p l?.");
 
         if (command.StartDate >= command.EndDate)
-            return Result.Failure<PromoResult>("Ngày b?t ??u ph?i tr??c ngày k?t thúc.");
+            return Result.Failure<bool>("Ngày b?t ??u ph?i tr??c ngày k?t thúc.");
 
-        return await _subscriptionApiService.CreatePromoAsync(token, command);
+        return await _subscriptionApiService.CreatePromoAsync(command);
     }
 }

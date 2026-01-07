@@ -29,6 +29,6 @@ public class GetPromosUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<PromoPaginationResult>("Phiên ??ng nh?p không h?p l?.");
 
-        return await _subscriptionApiService.GetPromosAsync(token, page, limit);
+        return await _subscriptionApiService.GetPromosAsync(page, limit);
     }
 }

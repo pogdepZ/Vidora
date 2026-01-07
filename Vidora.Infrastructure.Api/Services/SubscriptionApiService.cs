@@ -86,43 +86,17 @@ public class SubscriptionApiService : ISubscriptionApiService
         }
     }
 
-    public async Task<Result<PromoResult>> CreatePromoAsync(CreatePromoCommand command)
+    public async Task<Result<bool>> CreatePromoAsync(CreatePromoCommand command)
     {
-        try
-        {
-            var request = _mapper.Map<CreatePromoRequestDto>(command);
+        var request = _mapper.Map<CreatePromoRequestDto>(command);
 
-            var response = await _apiClient.PostAsync("api/promos", request);
-            var rawJson = await response.Content.ReadAsStringAsync();
+        var response = await _apiClient.PostAsync("api/promos", request);
+        var rawJson = await response.Content.ReadAsStringAsync();
 
-            System.Diagnostics.Debug.WriteLine($"[CreatePromoAsync] Raw JSON: {rawJson}");
+        System.Diagnostics.Debug.WriteLine($"[CreatePromoAsync] Raw JSON: {rawJson}");
 
-            if (!response.IsSuccessStatusCode)
-            {
-                try
-                {
-                    var errorResponse = JsonSerializer.Deserialize<CreatePromoResponseDto>(rawJson, JsonHelper.CamelCaseOptions);
-                    return Result.Failure<PromoResult>(errorResponse?.Message ?? "Không thể tạo mã giảm giá.");
-                }
-                catch
-                {
-                    return Result.Failure<PromoResult>("Không thể tạo mã giảm giá.");
-                }
-            }
-
-            var responseDto = JsonSerializer.Deserialize<CreatePromoResponseDto>(rawJson, JsonHelper.CamelCaseOptions);
-
-            if (responseDto == null || !responseDto.Success || responseDto.Data == null)
-                return Result.Failure<PromoResult>(responseDto?.Message ?? "Tạo mã giảm giá thất bại.");
-
-            var result = _mapper.Map<PromoResult>(responseDto.Data);
-            return Result.Success(result);
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[CreatePromoAsync] Error: {ex.Message}");
-            return Result.Failure<PromoResult>($"Lỗi: {ex.Message}");
-        }
+        if (!response.IsSuccessStatusCode) return Result.Failure<bool>("Lỗi tạo phiếu giảm giá mới");
+        return Result.Success(true);
     }
 
     public async Task<Result<OrderPaginationResult>> GetOrdersAsync(

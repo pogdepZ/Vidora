@@ -27,6 +27,6 @@ public class GetUserDetailUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<UserDetailResult>("Phiên ??ng nh?p không h?p l?.");
 
-        return await _userApiService.GetUserDetailAsync(token, userId);
+        return await _userApiService.GetUserDetailAsync(userId);
     }
 }

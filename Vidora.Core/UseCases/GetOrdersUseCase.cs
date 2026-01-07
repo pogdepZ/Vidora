@@ -42,6 +42,6 @@ public class GetOrdersUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<OrderPaginationResult>("Phiên ??ng nh?p không h?p l?.");
 
-        return await _subscriptionApiService.GetOrdersAsync(token, page, limit, search, status, planId);
+        return await _subscriptionApiService.GetOrdersAsync(page, limit, search, status, planId);
     }
 }

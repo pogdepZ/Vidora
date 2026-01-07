@@ -18,10 +18,10 @@ public static class JsonHelper
         }
     };
 
-    public static readonly JsonSerializerOptions SnakeCaseOptions = new()
+    public static readonly JsonSerializerOptions CamelCaseOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
         Converters =

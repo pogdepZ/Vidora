@@ -26,7 +26,7 @@ namespace Vidora.Core.UseCases
             var token = _sessionState.CurrentSession?.AccessToken?.Token;
             if (string.IsNullOrEmpty(token)) return Result.Failure<AdminDashboardResult>("Unauthorized");
 
-            return await _statsApi.GetDashboardStatsAsync(token);
+            return await _statsApi.GetDashboardStatsAsync();
         }
     }
 }

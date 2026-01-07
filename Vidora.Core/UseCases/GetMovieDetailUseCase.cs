@@ -27,6 +27,6 @@ public class GetMovieDetailUseCase
         if (string.IsNullOrEmpty(token))
             return Result.Failure<MovieDetailResult>("Phiên đăng nhập hết hạn.");
 
-        return await _movieApiService.GetMovieDetailAsync(token, movieId);
+        return await _movieApiService.GetMovieDetailAsync(movieId);
     }
 }
