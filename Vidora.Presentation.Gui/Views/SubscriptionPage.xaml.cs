@@ -9,5 +9,6 @@ public sealed partial class SubscriptionPage : Page
     public SubscriptionPage()
     {
         InitializeComponent();
+        DataContext = ViewModel;
     }
 }

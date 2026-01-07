@@ -61,6 +61,7 @@ public partial class SettingsViewModel : ObservableRecipient, INavigationAware
             RequestedTheme = SelectedTheme
         };
 
+
         var result = await dialog.ShowAsync();
         if (result != ContentDialogResult.Primary)
             return;

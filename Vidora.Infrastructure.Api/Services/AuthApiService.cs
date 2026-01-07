@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CSharpFunctionalExtensions;
 using System;
 using System.Threading.Tasks;
 using Vidora.Core.Contracts.Commands;
@@ -38,7 +39,8 @@ public class AuthApiService : IAuthApiService
             ParseExpiresIn(success.Data.ExpiresIn)
         );
 
-        var result = _mapper.Map<LoginResult>(success.Data) with {
+        var result = _mapper.Map<LoginResult>(success.Data) with
+        {
             ExpiresAt = expiresAt
         };
 
@@ -53,7 +55,7 @@ public class AuthApiService : IAuthApiService
         var httpRes = await _apiClient.PostAsync(
             path: "api/auth/register",
             body: req
-        ); 
+        );
 
         var apiRes = await httpRes.ReadAsync<RegisterResponseData>();
         var success = apiRes.EnsureSuccess<SuccessResponse<RegisterResponseData>>();
@@ -61,6 +63,50 @@ public class AuthApiService : IAuthApiService
         var result = _mapper.Map<RegisterResult>(success.Data);
 
         return result;
+    }
+
+
+    public async Task<Result<UserProfileResult>> GetProfileAsync()
+    {
+        var httpRes = await _apiClient.GetAsync(
+            path: "api/auth/me"            
+        );
+
+        var apiRes = await httpRes.ReadAsync<ProfileDataResponse>();
+
+        if (apiRes is not SuccessResponse<ProfileDataResponse> success)
+        {
+            return Result.Failure<UserProfileResult>(
+                apiRes.Message ?? "Lấy thông tin người dùng thất bại"
+            );
+        }
+
+        var result = _mapper.Map<UserProfileResult>(success.Data);
+
+        return Result.Success(result);
+    }
+
+
+    public async Task<Result<UserProfileResult>> UpdateProfileAsync(UpdateProfileCommand command)
+    {
+        var request = _mapper.Map<UpdateProfileRequest>(command);
+
+        var httpRes = await _apiClient.PutAsync(
+            url: "api/users/profile",
+            body: request
+        );
+
+        var apiRes = await httpRes.ReadAsync<UpdateProfileResponse>();
+        if (apiRes is not SuccessResponse<UpdateProfileResponse> success)
+        {
+            return Result.Failure<UserProfileResult>(
+                apiRes.Message ?? "Cập nhật thông tin thất bại"
+            );
+        }
+
+        var result = _mapper.Map<UserProfileResult>(success.Data);
+
+        return Result.Success(result);
     }
 
     private static TimeSpan ParseExpiresIn(string? raw)

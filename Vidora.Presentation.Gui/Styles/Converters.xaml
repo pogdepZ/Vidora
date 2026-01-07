@@ -9,4 +9,25 @@
 
     <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverter"/>
     <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverterInvert" Invert="True"/>
+
+    <converters:BoolNegationToVisibilityConverter x:Key="BoolNegationToVisibilityConverter"/>
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverterInvert" Invert="True"/>
+    <converters:StringToBoolConverter x:Key="StringToBoolConverter"/>
+    <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+    <converters:CurrencyConverter x:Key="CurrencyConverter"/>
+    <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+    <converters:DateTimeToDateTimeOffsetConverter x:Key="DateTimeToDateTimeOffsetConverter"/>
+    <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+    <converters:ListStringToStringConverter x:Key="ListStringToStringConverter"/>
+    <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+    
+    <!-- Watchlist Converters -->
+    <converters:BoolToHeartGlyphConverter x:Key="BoolToHeartGlyphConverter"/>
+    <converters:BoolToHeartColorConverter x:Key="BoolToHeartColorConverter"/>
+    <converters:BoolToWatchlistTextConverter x:Key="BoolToWatchlistTextConverter"/>
+    
+    <!-- Subscription Converters -->
+    <converters:BoolToSubscriptionTextConverter x:Key="BoolToSubscriptionTextConverter"/>
+    <converters:BoolToRenewGlyphConverter x:Key="BoolToRenewGlyphConverter"/>
 </ResourceDictionary>

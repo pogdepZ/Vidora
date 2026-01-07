@@ -8,8 +8,12 @@ namespace Vidora.Presentation.Gui.ViewModels;
 
 public partial class VideoPlayerViewModel : ObservableRecipient, INavigationAware
 {
+    // TODO: add PosterSource
     [ObservableProperty]
     private MediaSource? _MediaSource;
+
+    [ObservableProperty]
+    private string _title = string.Empty;
 
     public VideoPlayerViewModel()
     {
@@ -26,6 +30,24 @@ public partial class VideoPlayerViewModel : ObservableRecipient, INavigationAwar
         if (parameter is string url && !string.IsNullOrWhiteSpace(url))
         {
             MediaSource = CreateMediaSourceFromString(url);
+            return;
+        }
+
+        if (parameter != null)
+        {
+            var paramType = parameter.GetType();
+            var urlProp = paramType.GetProperty("Url");
+            var titleProp = paramType.GetProperty("Title");
+
+            if (urlProp != null && urlProp.GetValue(parameter) is string urlValue)
+            {
+                MediaSource = CreateMediaSourceFromString(urlValue);
+            }
+
+            if (titleProp != null && titleProp.GetValue(parameter) is string titleValue)
+            {
+                Title = titleValue;
+            }
         }
     }
 

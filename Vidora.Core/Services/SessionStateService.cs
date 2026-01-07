@@ -59,6 +59,7 @@ public class SessionStateService : ISessionStateService
         {
             throw new InvalidOperationException("A session is already active. Clear the current session before storing a new one.");
         }
+
         CurrentSession = newSession;
         SaveSession(newSession);
         SessionChanged?.Invoke(this, new SessionChangeEventArgs(reason));
