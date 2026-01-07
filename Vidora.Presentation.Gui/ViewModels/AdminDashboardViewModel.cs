@@ -43,24 +43,24 @@ public partial class AdminDashboardViewModel : ObservableRecipient, INavigationA
             System.Diagnostics.Debug.WriteLine("===== API DATA START =====");
             System.Diagnostics.Debug.WriteLine(jsonDebug);
             System.Diagnostics.Debug.WriteLine("===== API DATA END =====");
-            if (Stats.RevenueData == null || Stats.RevenueData.Count == 0 || Stats.RevenueData.Sum() == 0)
-            {
-                // Tạo mảng giả lập 30 ngày nhấp nhô
-                var random = new Random();
-                var fakeRevenue = new List<double>();
-                double lastValue = 500000; // Giá trị khởi điểm (500k VND)
+            //if (Stats.RevenueData == null || Stats.RevenueData.Count == 0 || Stats.RevenueData.Sum() == 0)
+            //{
+            //    // Tạo mảng giả lập 30 ngày nhấp nhô
+            //    var random = new Random();
+            //    var fakeRevenue = new List<double>();
+            //    double lastValue = 500000; // Giá trị khởi điểm (500k VND)
 
-                for (int i = 0; i < 30; i++)
-                {
-                    // Tạo biến động từ -20% đến +30% so với ngày trước đó
-                    double change = lastValue * (random.NextDouble() * 0.5 - 0.2);
-                    lastValue = Math.Max(100000, lastValue + change); // Đảm bảo không dưới 100k
-                    fakeRevenue.Add(lastValue);
-                }
+            //    for (int i = 0; i < 30; i++)
+            //    {
+            //        // Tạo biến động từ -20% đến +30% so với ngày trước đó
+            //        double change = lastValue * (random.NextDouble() * 0.5 - 0.2);
+            //        lastValue = Math.Max(100000, lastValue + change); // Đảm bảo không dưới 100k
+            //        fakeRevenue.Add(lastValue);
+            //    }
 
-                // Gán lại dữ liệu giả lập vào Stats (Dùng record 'with' expression)
-                Stats = Stats with { RevenueData = fakeRevenue };
-            }
+            //    // Gán lại dữ liệu giả lập vào Stats (Dùng record 'with' expression)
+            //    Stats = Stats with { RevenueData = fakeRevenue };
+            //}
         }
         else
         {

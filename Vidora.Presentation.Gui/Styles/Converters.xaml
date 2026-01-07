@@ -9,4 +9,6 @@
 
     <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverter"/>
     <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverterInvert" Invert="True"/>
+
+    <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
 </ResourceDictionary>

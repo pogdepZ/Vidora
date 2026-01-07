@@ -61,7 +61,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="Transparent">
+    <Grid Background="Transparent" Margin="0, 20">
 
         <!-- RESPONSIVE VISUAL STATES -->
         <VisualStateManager.VisualStateGroups>
@@ -165,14 +165,14 @@
         <ScrollViewer x:Name="MainScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="30">
             <StackPanel Spacing="25">
 
-                <!-- 1. HEADER -->
+                <!-- 1. HEADER -->  
                 <Grid>
                     <StackPanel>
                         <TextBlock Text="Dashboard" FontSize="28" FontWeight="Bold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                         <TextBlock Text="Welcome back! Here's your Vidora overview" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,5,0,0"/>
                     </StackPanel>
-                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="#1F1F1F" CornerRadius="4" Padding="12,6">
-                        <TextBlock Text="{x:Bind ViewModel.CurrentDate}" Foreground="{StaticResource TextGrayBrush}" FontSize="12"/>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="4" Padding="12,6">
+                        <TextBlock Text="{x:Bind ViewModel.CurrentDate}" Foreground="{ThemeResource TextFillColorPrimaryBrush}" FontSize="12"/>
                     </Border>
                 </Grid>
 
@@ -198,7 +198,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- Card 1 -->
-                    <Border x:Name="StatCard1" Grid.Column="0" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="Transparent" Margin="0,0,15,0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                    <Border x:Name="StatCard1" Grid.Column="0" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,15,0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                         <Grid>
                             <StackPanel>
                                 <TextBlock Text="Total Movies" Style="{StaticResource CardTitleStyle}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
@@ -213,7 +213,7 @@
                     </Border>
 
                     <!-- Card 2 -->
-                    <Border x:Name="StatCard2" Grid.Column="1" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="Transparent" Margin="0,0,15,0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                    <Border x:Name="StatCard2" Grid.Column="1" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,15,0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                         <Grid>
                             <StackPanel>
                                 <TextBlock Text="Users" Style="{StaticResource CardTitleStyle}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
@@ -229,7 +229,7 @@
                     </Border>
 
                     <!-- Card 3 -->
-                    <Border x:Name="StatCard3" Grid.Column="2" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="Transparent" Margin="0,0,15,0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                    <Border x:Name="StatCard3" Grid.Column="2" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Margin="0,0,15,0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                         <Grid>
                             <StackPanel>
                                 <TextBlock Text="Today's Views" Style="{StaticResource CardTitleStyle}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
@@ -244,7 +244,7 @@
                     </Border>
 
                     <!-- Card 4 -->
-                    <Border x:Name="StatCard4" Grid.Column="3" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="Transparent" Margin="0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                    <Border x:Name="StatCard4" Grid.Column="3" Grid.Row="0" Style="{StaticResource StatCardStyle}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Margin="0" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                         <Grid>
                             <StackPanel>
                                 <TextBlock Text="Monthly Revenue" Style="{StaticResource CardTitleStyle}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
@@ -273,7 +273,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- Revenue Chart -->
-                    <Border Grid.Column="0" Background="Transparent" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                    <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -306,7 +306,7 @@
                     <!-- Right Column: New Signups & Popular Plans -->
                     <!-- Đặt tên MiddleRightSection để VSM điều khiển -->
                     <StackPanel x:Name="MiddleRightSection" Grid.Column="1" Spacing="20" >
-                        <Border Background="Transparent" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                             <Grid>
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="10">
@@ -322,7 +322,7 @@
 
                         <!-- Recent Signups -->
                         <!-- Đặt tên BottomRightSection để VSM điều khiển -->
-                        <Border x:Name="BottomRightSection" Grid.Column="1" Background="Transparent" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                        <Border x:Name="BottomRightSection" Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                             <StackPanel>
                                 <TextBlock Text="Recent Signups" FontWeight="Bold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                                 <TextBlock Text="3 Latest Signups" 
@@ -347,7 +347,7 @@
                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}" 
                                            FontSize="13" FontWeight="SemiBold"/>
                                                         <TextBlock Text="{x:Bind Email}" 
-                                           Foreground="{StaticResource TextGrayBrush}" 
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}" 
                                            FontSize="11"/>
                                                     </StackPanel>
                                                 </Grid>
@@ -372,7 +372,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Column="0" Background="Transparent" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
+                    <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" Padding="20" BorderBrush="{ThemeResource TextFillColorPrimaryBrush}" BorderThickness="1">
                         <StackPanel>
                             <TextBlock Text="Top 5 Most Watched Movies" FontWeight="Bold" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
                             <TextBlock Text="Ranked by total views" Foreground="{StaticResource TextGrayBrush}" FontSize="12" Margin="0,4,0,20"/>

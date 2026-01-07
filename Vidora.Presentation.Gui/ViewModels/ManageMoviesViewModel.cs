@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Vidora.Core.Contracts.Commands;
@@ -530,4 +532,152 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     }
     
     public Task OnNavigatedFromAsync() => Task.CompletedTask;
+
+    #region Import Excel Properties
+
+    [ObservableProperty]
+    private bool _isImporting;
+
+    [ObservableProperty]
+    private int _importTotalCount;
+
+    [ObservableProperty]
+    private int _importCurrentIndex;
+
+    [ObservableProperty]
+    private int _importSuccessCount;
+
+    [ObservableProperty]
+    private int _importFailedCount;
+
+    [ObservableProperty]
+    private string _importStatusMessage = string.Empty;
+
+    [ObservableProperty]
+    private double _importProgress;
+
+    #endregion
+
+    #region Import Excel Methods
+
+    /// <summary>
+    /// Đọc file Excel và trả về danh sách CreateMovieCommand
+    /// Columns: Title | Description | ReleaseYear | PosterUrl | TrailerUrl | MovieUrl | BannerUrl
+    /// </summary>
+    public List<CreateMovieCommand> ReadMoviesFromExcel(string filePath)
+    {
+        var movies = new List<CreateMovieCommand>();
+
+        using var workbook = new XLWorkbook(filePath);
+        var worksheet = workbook.Worksheet(1);
+        var rows = worksheet.RangeUsed()?.RowsUsed().Skip(1); // Skip header row
+
+        if (rows == null) return movies;
+
+        foreach (var row in rows)
+        {
+            try
+            {
+                var title = row.Cell(1).GetString().Trim();
+                if (string.IsNullOrWhiteSpace(title)) continue;
+
+                var description = row.Cell(2).GetString().Trim();
+                var releaseYearStr = row.Cell(3).GetString().Trim();
+                var posterUrl = row.Cell(4).GetString().Trim();
+                var trailerUrl = row.Cell(5).GetString().Trim();
+                var movieUrl = row.Cell(6).GetString().Trim();
+                var bannerUrl = row.Cell(7).GetString().Trim();
+
+                int.TryParse(releaseYearStr, out var releaseYear);
+                if (releaseYear < 1900 || releaseYear > DateTime.Now.Year + 5)
+                    releaseYear = DateTime.Now.Year;
+
+                var command = new CreateMovieCommand(
+                    title: title,
+                    description: description,
+                    posterUrl: posterUrl,
+                    bannerUrl: bannerUrl,
+                    trailerUrl: trailerUrl,
+                    movieUrl: movieUrl,
+                    releaseYear: releaseYear,
+                    genreIds: new List<int>(),
+                    castAndCrew: new List<(int, string)>()
+                );
+
+                movies.Add(command);
+            }
+            catch
+            {
+                // Skip invalid rows
+            }
+        }
+
+        return movies;
+    }
+
+    /// <summary>
+    /// Import movies từ danh sách CreateMovieCommand (gọi API tuần tự)
+    /// </summary>
+    public async Task ImportMoviesAsync(List<CreateMovieCommand> movies)
+    {
+        if (movies == null || movies.Count == 0) return;
+
+        IsImporting = true;
+        ImportTotalCount = movies.Count;
+        ImportCurrentIndex = 0;
+        ImportSuccessCount = 0;
+        ImportFailedCount = 0;
+        ImportProgress = 0;
+        ImportStatusMessage = "Đang import...";
+
+        try
+        {
+            for (int i = 0; i < movies.Count; i++)
+            {
+                ImportCurrentIndex = i + 1;
+                ImportStatusMessage = $"Đang import phim {ImportCurrentIndex}/{ImportTotalCount}: {movies[i].Title}";
+                ImportProgress = (double)ImportCurrentIndex / ImportTotalCount * 100;
+
+                var result = await _createMovieUseCase.ExecuteAsync(movies[i]);
+
+                if (result.IsSuccess)
+                {
+                    ImportSuccessCount++;
+                }
+                else
+                {
+                    ImportFailedCount++;
+                    System.Diagnostics.Debug.WriteLine($"[Import Failed] {movies[i].Title}: {result.Error}");
+                }
+            }
+
+            ImportStatusMessage = $"Hoàn tất! Thành công: {ImportSuccessCount}, Thất bại: {ImportFailedCount}";
+        }
+        catch (Exception ex)
+        {
+            ImportStatusMessage = $"Lỗi: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"[Import Error] {ex.Message}");
+        }
+        finally
+        {
+            IsImporting = false;
+            await LoadMoviesAsync(); // Reload danh sách sau khi import
+        }
+    }
+
+    /// <summary>
+    /// Reset trạng thái import
+    /// </summary>
+    public void ResetImportState()
+    {
+        IsImporting = false;
+        ImportTotalCount = 0;
+        ImportCurrentIndex = 0;
+        ImportSuccessCount = 0;
+        ImportFailedCount = 0;
+        ImportProgress = 0;
+        ImportStatusMessage = string.Empty;
+    }
+
+    #endregion
 }

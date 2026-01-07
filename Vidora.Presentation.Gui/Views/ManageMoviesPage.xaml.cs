@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Vidora.Core.Contracts.Results;
 using Vidora.Core.Entities;
 using Vidora.Presentation.Gui.ViewModels;
+using Windows.Storage.Pickers;
 
 namespace Vidora.Presentation.Gui.Views;
 
@@ -42,6 +43,85 @@ public sealed partial class ManageMoviesPage : Page
             {
                 NotificationInfoBar.IsOpen = false;
             }
+        }
+    }
+
+    /// <summary>
+    /// Handler cho nút Import Excel
+    /// </summary>
+    private async void OnImportExcelButtonClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            // 1. Mở FileOpenPicker để chọn file Excel
+            var picker = new FileOpenPicker();
+            
+            // WinUI 3 requires window handle for file picker
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+            
+            picker.ViewMode = PickerViewMode.List;
+            picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            picker.FileTypeFilter.Add(".xlsx");
+            picker.FileTypeFilter.Add(".xls");
+
+            var file = await picker.PickSingleFileAsync();
+            
+            if (file == null)
+            {
+                // User cancelled
+                return;
+            }
+
+            // 2. Reset trạng thái import
+            ViewModel.ResetImportState();
+
+            // 3. Đọc file Excel và parse thành danh sách CreateMovieCommand
+            var movies = ViewModel.ReadMoviesFromExcel(file.Path);
+
+            if (movies == null || movies.Count == 0)
+            {
+                ShowNotification("Thông báo", "Không tìm thấy phim nào trong file Excel.", InfoBarSeverity.Warning);
+                return;
+            }
+
+            // 4. Hiển thị xác nhận trước khi import
+            var confirmDialog = new ContentDialog
+            {
+                Title = "Xác nhận Import",
+                Content = $"Tìm thấy {movies.Count} phim trong file Excel.\n\nBạn có muốn tiếp tục import?",
+                PrimaryButtonText = "Import",
+                CloseButtonText = "Hủy",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = this.Content.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            // 5. Bắt đầu import (gọi API tuần tự)
+            await ViewModel.ImportMoviesAsync(movies);
+
+            // 6. Hiển thị kết quả
+            if (ViewModel.ImportFailedCount == 0)
+            {
+                ShowNotification("Thành công", $"Đã import thành công {ViewModel.ImportSuccessCount} phim!", InfoBarSeverity.Success, 5);
+            }
+            else
+            {
+                ShowNotification("Hoàn tất", 
+                    $"Import hoàn tất: {ViewModel.ImportSuccessCount} thành công, {ViewModel.ImportFailedCount} thất bại.", 
+                    InfoBarSeverity.Warning, 5);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowNotification("Lỗi", $"Không thể import file: {ex.Message}", InfoBarSeverity.Error, 5);
+            System.Diagnostics.Debug.WriteLine($"[Import Excel Error] {ex}");
         }
     }
 
