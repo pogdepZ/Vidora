@@ -58,7 +58,7 @@ public sealed partial class ManageUsersPage : Page
 
         if (ViewModel.SelectedUserDetail == null)
         {
-            ShowNotification("Lỗi", "Không thể tải thông tin chi tiết người dùng.", InfoBarSeverity.Error);
+            ShowNotification("Error", "Unable to load user details.", InfoBarSeverity.Error);
             return;
         }
 
@@ -71,7 +71,7 @@ public sealed partial class ManageUsersPage : Page
         var userInfoSection = new StackPanel { Spacing = 8 };
         userInfoSection.Children.Add(new TextBlock 
         { 
-            Text = "Thông tin người dùng", 
+            Text = "User Information", 
             FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
             FontSize = 16,
             Margin = new Thickness(0, 0, 0, 8)
@@ -81,14 +81,14 @@ public sealed partial class ManageUsersPage : Page
         userInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
         userInfoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-        AddInfoRow(userInfoGrid, 0, "Họ tên:", detail.User.FullName);
+        AddInfoRow(userInfoGrid, 0, "Full Name:", detail.User.FullName);
         AddInfoRow(userInfoGrid, 1, "Username:", detail.User.Username);
         AddInfoRow(userInfoGrid, 2, "Email:", detail.User.Email);
-        AddInfoRow(userInfoGrid, 3, "Vai trò:", detail.User.RoleDisplayText);
-        AddInfoRow(userInfoGrid, 4, "Trạng thái:", detail.User.StatusDisplayText);
-        AddInfoRow(userInfoGrid, 5, "Ngày tạo:", detail.User.CreatedAt.ToString("dd/MM/yyyy HH:mm"));
-        AddInfoRow(userInfoGrid, 6, "Giới tính:", detail.User.Gender ?? "Chưa cập nhật");
-        AddInfoRow(userInfoGrid, 7, "Ngày sinh:", detail.User.Birthday?.ToString("dd/MM/yyyy") ?? "Chưa nhập nhật");
+        AddInfoRow(userInfoGrid, 3, "Role:", detail.User.RoleDisplayText);
+        AddInfoRow(userInfoGrid, 4, "Status:", detail.User.StatusDisplayText);
+        AddInfoRow(userInfoGrid, 5, "Created At:", detail.User.CreatedAt.ToString("dd/MM/yyyy HH:mm"));
+        AddInfoRow(userInfoGrid, 6, "Gender:", detail.User.Gender ?? "Not updated");
+        AddInfoRow(userInfoGrid, 7, "Birthday:", detail.User.Birthday?.ToString("dd/MM/yyyy") ?? "Not updated");
 
         userInfoSection.Children.Add(userInfoGrid);
         stackPanel.Children.Add(userInfoSection);
@@ -99,7 +99,7 @@ public sealed partial class ManageUsersPage : Page
             var subSection = new StackPanel { Spacing = 8 };
             subSection.Children.Add(new TextBlock 
             { 
-                Text = $"Gói đăng ký ({detail.Subscriptions.Count})", 
+                Text = $"Subscriptions ({detail.Subscriptions.Count})", 
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
                 FontSize = 16,
                 Margin = new Thickness(0, 8, 0, 8)
@@ -117,8 +117,8 @@ public sealed partial class ManageUsersPage : Page
 
                 var subStack = new StackPanel { Spacing = 4 };
                 subStack.Children.Add(new TextBlock { Text = sub.PlanName, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-                subStack.Children.Add(new TextBlock { Text = $"Từ: {sub.StartDate:dd/MM/yyyy} - ??n: {sub.EndDate:dd/MM/yyyy}", FontSize = 12, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray) });
-                subStack.Children.Add(new TextBlock { Text = $"Trạng thái: {sub.StatusDisplayText}", FontSize = 12 });
+                subStack.Children.Add(new TextBlock { Text = $"From: {sub.StartDate:dd/MM/yyyy} - To: {sub.EndDate:dd/MM/yyyy}", FontSize = 12, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray) });
+                subStack.Children.Add(new TextBlock { Text = $"Status: {sub.StatusDisplayText}", FontSize = 12 });
 
                 subBorder.Child = subStack;
                 subSection.Children.Add(subBorder);
@@ -133,7 +133,7 @@ public sealed partial class ManageUsersPage : Page
             var orderSection = new StackPanel { Spacing = 8 };
             orderSection.Children.Add(new TextBlock 
             { 
-                Text = $"Lịch sử mua hàng ({detail.Orders.Count})", 
+                Text = $"Order History ({detail.Orders.Count})", 
                 FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
                 FontSize = 16,
                 Margin = new Thickness(0, 8, 0, 8)
@@ -150,11 +150,11 @@ public sealed partial class ManageUsersPage : Page
                 };
 
                 var orderStack = new StackPanel { Spacing = 4 };
-                orderStack.Children.Add(new TextBlock { Text = $"Đơn hàng #{order.OrderId}", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-                orderStack.Children.Add(new TextBlock { Text = $"Số tiền: {order.AmountDisplay}", FontSize = 12 });
-                orderStack.Children.Add(new TextBlock { Text = $"Phươnng thức: {order.PaymentMethod}", FontSize = 12, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray) });
-                orderStack.Children.Add(new TextBlock { Text = $"Trạng thái: {order.StatusDisplayText}", FontSize = 12 });
-                orderStack.Children.Add(new TextBlock { Text = $"Ngày tạo: {order.CreatedAt:dd/MM/yyyy HH:mm}", FontSize = 12, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray) });
+                orderStack.Children.Add(new TextBlock { Text = $"Order #{order.OrderId}", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+                orderStack.Children.Add(new TextBlock { Text = $"Amount: {order.AmountDisplay}", FontSize = 12 });
+                orderStack.Children.Add(new TextBlock { Text = $"Payment Method: {order.PaymentMethod}", FontSize = 12, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray) });
+                orderStack.Children.Add(new TextBlock { Text = $"Status: {order.StatusDisplayText}", FontSize = 12 });
+                orderStack.Children.Add(new TextBlock { Text = $"Created At: {order.CreatedAt:dd/MM/yyyy HH:mm}", FontSize = 12, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray) });
 
                 orderBorder.Child = orderStack;
                 orderSection.Children.Add(orderBorder);
@@ -172,9 +172,9 @@ public sealed partial class ManageUsersPage : Page
 
         ContentDialog dialog = new ContentDialog
         {
-            Title = $"Chi tiêt: {detail.User.FullName}",
+            Title = $"Details: {detail.User.FullName}",
             Content = scrollViewer,
-            CloseButtonText = "Đóng",
+            CloseButtonText = "Close",
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.Content.XamlRoot
         };
@@ -213,15 +213,15 @@ public sealed partial class ManageUsersPage : Page
             return;
 
         var currentStatus = user.Status?.ToUpper();
-        var actionText = currentStatus == "ACTIVE" ? "khóa" : "mở khóa";
+        var actionText = currentStatus == "ACTIVE" ? "lock" : "unlock";
         var newStatusText = currentStatus == "ACTIVE" ? "LOCKED" : "ACTIVE";
 
         ContentDialog confirmDialog = new ContentDialog
         {
-            Title = "Xác nhận thay đổi trạng thái",
-            Content = $"Bạn có chắc muốn {actionText} tài khoản '{user.FullName}'?",
-            PrimaryButtonText = "Xác nhận",
-            CloseButtonText = "Huỷ",
+            Title = "Confirm Status Change",
+            Content = $"Are you sure you want to {actionText} the account '{user.FullName}'?",
+            PrimaryButtonText = "Confirm",
+            CloseButtonText = "Cancel",
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.Content.XamlRoot
         };
@@ -235,11 +235,11 @@ public sealed partial class ManageUsersPage : Page
 
             if (ViewModel.IsSuccess)
             {
-                ShowNotification("Thành công", $"Đã {actionText} tài khoản '{userName}' thành công!", InfoBarSeverity.Success);
+                ShowNotification("Success", $"Account '{userName}' has been {actionText}ed successfully!", InfoBarSeverity.Success);
             }
             else
             {
-                ShowNotification("Lỗi", ViewModel.ErrorMessage ?? $"Không th {actionText} tài khoản.", InfoBarSeverity.Error);
+                ShowNotification("Error", ViewModel.ErrorMessage ?? $"Unable to {actionText} the account.", InfoBarSeverity.Error);
             }
         }
     }

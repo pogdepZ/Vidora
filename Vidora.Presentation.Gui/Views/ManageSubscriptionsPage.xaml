@@ -235,17 +235,17 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Grid.Column="0" Text="ORDER CODE" FontWeight="Bold" Foreground="Gray"/>
                             <TextBlock Grid.Column="1" Text="CUSTOMER" FontWeight="Bold" Foreground="Gray"/>
                             <TextBlock Grid.Column="2" Text="PLAN" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="3" Text="ORIGINAL PRICE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="4" Text="PAYMENT" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="5" Text="STATUS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="6" Text="PAID DATE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="PAYMENT" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="STATUS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="PAID DATE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="ACTION" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center" Margin="10,0"/>
                         </Grid>
 
                         <!-- Orders List -->
@@ -285,8 +285,8 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
                                             <!-- Order Code -->
@@ -314,16 +314,8 @@
                                                        HorizontalAlignment="Center"
                                                        FontSize="12"/>
 
-                                            <!-- Amount -->
-                                            <TextBlock Grid.Column="3"
-                                                       Text="{x:Bind AmountDisplay}"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Center"
-                                                       FontSize="12"
-                                                       Foreground="Gray"/>
-
                                             <!-- Final Amount -->
-                                            <TextBlock Grid.Column="4"
+                                            <TextBlock Grid.Column="3"
                                                        Text="{x:Bind FinalAmountDisplay}"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Center"
@@ -331,7 +323,7 @@
                                                        FontWeight="SemiBold"/>
 
                                             <!-- Status -->
-                                            <Border Grid.Column="5"
+                                            <Border Grid.Column="4"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Padding="10,4"
@@ -343,12 +335,25 @@
                                             </Border>
 
                                             <!-- Paid At -->
-                                            <TextBlock Grid.Column="6"
+                                            <TextBlock Grid.Column="5"
                                                        Text="{x:Bind PaidAtDisplay}"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Center"
                                                        FontSize="11"
                                                        Foreground="Gray"/>
+
+                                            <!-- View Details Button -->
+                                            <Button Grid.Column="6"
+                                                    Click="OnViewOrderDetailsClick"
+                                                    Tag="{x:Bind}"
+                                                    ToolTipService.ToolTip="View Details"
+                                                    Padding="8,6"
+                                                    Margin="10,0">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <FontIcon Glyph="&#xE8A5;" FontSize="12"/>
+                                                    <TextBlock Text="Details" FontSize="12"/>
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
