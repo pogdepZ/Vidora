@@ -1,6 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.Net.Http;
+using System;
 using Vidora.Core.Interfaces.Api;
+using Vidora.Infrastructure.Api.Clients;
+using Vidora.Infrastructure.Api.Handlers;
 using Vidora.Infrastructure.Api.Mapping;
 using Vidora.Infrastructure.Api.Options;
 using Vidora.Infrastructure.Api.Services;
@@ -20,7 +25,14 @@ public static class DependencyInjection
         services.AddTransient<ISubscriptionApiService, SubscriptionApiService>();
 
         //
-        services.AddSingleton<ApiClient>();
+        services.AddTransient<AuthTokenHandler>();
+        services.AddHttpClient<ApiClient>((sp, client) =>
+        {
+            var options = sp.GetRequiredService<IOptions<ApiOptions>>().Value;
+            client.BaseAddress = new Uri(options.BaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(options.Timeout);
+        })
+        .AddHttpMessageHandler<AuthTokenHandler>();
 
         //
         services.AddAutoMapper(typeof(AuthMappingProfile).Assembly);

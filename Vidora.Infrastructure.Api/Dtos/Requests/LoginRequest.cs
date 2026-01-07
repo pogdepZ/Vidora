@@ -1,6 +1,6 @@
 ﻿namespace Vidora.Infrastructure.Api.Dtos.Requests;
 
-internal record LoginRequest(
+public record LoginRequest(
     string Email,
     string Password
 );

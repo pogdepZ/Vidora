@@ -1,7 +1,7 @@
 using AutoMapper;
 using System.Linq;
 using Vidora.Core.Contracts.Results;
-using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
+using Vidora.Infrastructure.Api.Dtos.Responses;
 
 namespace Vidora.Infrastructure.Api.Mapping;
 
@@ -16,7 +16,7 @@ public class UserMappingProfile : Profile
         CreateMap<PaginationDto, PaginationResult>();
 
         // Map UserPaginationResponseDto -> UserPaginationResult
-        CreateMap<UserPaginationResponseDto, UserPaginationResult>()
+        CreateMap<UserPaginationResponse, UserPaginationResult>()
             .ForCtorParam("Users", opt => opt.MapFrom(src => src.Data))
             .ForCtorParam("Pagination", opt => opt.MapFrom(src => src.Pagination));
 
@@ -24,13 +24,13 @@ public class UserMappingProfile : Profile
         CreateMap<UserInfoDto, AdminUserResult>();
 
         // Map SubscriptionDto -> UserSubscriptionResult
-        CreateMap<SubscriptionDto, UserSubscriptionResult>();
+        CreateMap<SubscriptionData, UserSubscriptionResult>();
 
         // Map OrderDto -> UserOrderResult
-        CreateMap<OrderDto, UserOrderResult>();
+        CreateMap<Dtos.Responses.OrderData, UserOrderResult>();
 
         // Map UserDetailDataDto -> UserDetailResult
-        CreateMap<UserDetailDataDto, UserDetailResult>()
+        CreateMap<UserDetailData, UserDetailResult>()
             .ForCtorParam("User", opt => opt.MapFrom(src => src.User))
             .ForCtorParam("Subscriptions", opt => opt.MapFrom(src => src.Subscriptions))
             .ForCtorParam("Orders", opt => opt.MapFrom(src => src.Orders));

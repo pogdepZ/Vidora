@@ -1,5 +1,5 @@
 ﻿namespace Vidora.Infrastructure.Api.Dtos.Responses.Datas;
 
-internal record RegisterResponseData(
+public record RegisterData(
     UserData User
 );

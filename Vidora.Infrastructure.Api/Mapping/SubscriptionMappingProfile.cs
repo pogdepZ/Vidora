@@ -2,7 +2,8 @@ using AutoMapper;
 using Vidora.Core.Contracts.Commands;
 using Vidora.Core.Contracts.Results;
 using Vidora.Infrastructure.Api.Dtos.Requests;
-using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
+using Vidora.Infrastructure.Api.Dtos.Responses;
+using Vidora.Infrastructure.Api.Dtos.Responses.Metas;
 
 namespace Vidora.Infrastructure.Api.Mapping;
 
@@ -11,13 +12,13 @@ public class SubscriptionMappingProfile : Profile
     public SubscriptionMappingProfile()
     {
         // Map SubscriptionPlanDto -> SubscriptionPlanResult
-        CreateMap<SubscriptionPlanDto, SubscriptionPlanResult>();
+        CreateMap<SubscriptionPlanData, SubscriptionPlanResult>();
 
         // Map PromoItemDto -> PromoResult
         CreateMap<PromoItemDto, PromoResult>();
 
         // Map PromoResponseDto -> PromoPaginationResult
-        CreateMap<PromoResponseDto, PromoPaginationResult>()
+        CreateMap<PromoResponse, PromoPaginationResult>()
             .ForCtorParam("Promos", opt => opt.MapFrom(src => src.Data))
             .ForCtorParam("Pagination", opt => opt.MapFrom(src => src.Pagination));
 
@@ -25,7 +26,7 @@ public class SubscriptionMappingProfile : Profile
         CreateMap<CreatePromoCommand, CreatePromoRequestDto>();
 
         // Map OrderItemDto -> OrderResult (flat structure)
-        CreateMap<OrderItemDto, OrderResult>()
+        CreateMap<OrderData, OrderResult>()
             .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.FullName))
             .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.Email));
 
@@ -35,6 +36,6 @@ public class SubscriptionMappingProfile : Profile
             .ForCtorParam("Pagination", opt => opt.MapFrom(src => src.Pagination));
 
         // Map PaginationDto -> PaginationResult (if not already mapped elsewhere)
-        CreateMap<PaginationDto, PaginationResult>();
+        CreateMap<PaginationMeta, PaginationResult>();
     }
 }

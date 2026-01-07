@@ -2,7 +2,7 @@
 
 namespace Vidora.Infrastructure.Api.Dtos.Responses.Datas;
 
-internal record UserData(
+public record UserData(
     int UserId,
     string Email,
     string Username,

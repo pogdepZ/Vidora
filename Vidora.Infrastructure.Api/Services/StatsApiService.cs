@@ -10,36 +10,33 @@ using System.Threading.Tasks;
 using Vidora.Core.Contracts.Results;
 using Vidora.Core.Helpers;
 using Vidora.Core.Interfaces.Api;
-using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
+using Vidora.Infrastructure.Api.Clients;
+using Vidora.Infrastructure.Api.Dtos.Responses;
 
-namespace Vidora.Infrastructure.Api.Services
+namespace Vidora.Infrastructure.Api.Services;
+
+public class StatsApiService : IStatsApiService
 {
-    public class StatsApiService : IStatsApiService
+    private readonly ApiClient _apiClient;
+    private readonly IMapper _mapper;
+
+    public StatsApiService(ApiClient apiClient, IMapper mapper)
     {
-        private readonly ApiClient _apiClient;
-        private readonly IMapper _mapper;
+        _apiClient = apiClient;
+        _mapper = mapper;
+    }
 
-        public StatsApiService(ApiClient apiClient, IMapper mapper)
-        {
-            _apiClient = apiClient;
-            _mapper = mapper;
-        }
+    public async Task<Result<AdminDashboardResult>> GetDashboardStatsAsync()
+    {
+        var response = await _apiClient.GetAsync("api/stats/dashboard");
 
-        public async Task<Result<AdminDashboardResult>> GetDashboardStatsAsync(string token)
-        {
-            var response = await _apiClient.GetAsync("api/stats/dashboard", token);
+        if (!response.IsSuccessStatusCode)
+            return Result.Failure<AdminDashboardResult>("Không thể tải dữ liệu thống kê.");
 
-            if (!response.IsSuccessStatusCode)
-                return Result.Failure<AdminDashboardResult>("Không thể tải dữ liệu thống kê.");
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var dto = await response.Content.ReadFromJsonAsync<DashboardResponse>(options);
 
-            // Dùng JsonHelper.SnakeCaseOptions bạn đã có
-            // Trong StatsApiService.cs
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var dto = await response.Content.ReadFromJsonAsync<DashboardResponseDto>(options);
-
-            // Map DTO sang Result (Cần cấu hình AutoMapper tương ứng)
-            var result = _mapper.Map<AdminDashboardResult>(dto);
-            return Result.Success(result);
-        }
+        var result = _mapper.Map<AdminDashboardResult>(dto);
+        return Result.Success(result);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Vidora.Core.Helpers;
-using Vidora.Infrastructure.Api.Dtos.Responses;
+using Vidora.Infrastructure.Api.Dtos.Responses.Base;
 
 namespace Vidora.Infrastructure.Api.Extensions;
 
@@ -86,7 +86,7 @@ internal static class ApiResponseExtensions
             );
         }
 
-        if (JsonHelper.TryDeserialize<PaginatedSucessResponse<T>>(json, out var success)
+        if (JsonHelper.TryDeserialize<PaginatedSuccessResponse<T>>(json, out var success)
             && success != null)
         {
             return success with { StatusCode = statusCode };

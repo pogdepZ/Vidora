@@ -19,11 +19,11 @@ internal class AuthMappingProfile : Profile
         CreateMap<UserData, UserResult>();
 
         // LoginResponseData -> LoginResult
-        CreateMap<LoginResponseData, LoginResult>()
+        CreateMap<LoginData, LoginResult>()
             .ForCtorParam(nameof(LoginResult.ExpiresAt), o => o.MapFrom(_ => DateTime.MinValue));
 
         // RegisterResponseData -> RegisterResult
-        CreateMap<RegisterResponseData, RegisterResult>()
+        CreateMap<RegisterData, RegisterResult>()
             .ForCtorParam(nameof(RegisterResult.Message), o => o.MapFrom(_ => "Registration successfully"));
     }
 }

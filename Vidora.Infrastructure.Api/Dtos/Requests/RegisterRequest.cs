@@ -1,6 +1,6 @@
 ﻿namespace Vidora.Infrastructure.Api.Dtos.Requests;
 
-internal record RegisterRequest(
+public record RegisterRequest(
     string Username,
     string FullName,
     string Email,

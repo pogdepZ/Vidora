@@ -1,18 +1,26 @@
 ﻿using AutoMapper;
 using Vidora.Core.Contracts.Results;
+using Vidora.Core.Entities;
 using Vidora.Infrastructure.Api.Dtos.Responses;
+using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
+using Vidora.Infrastructure.Api.Dtos.Responses.Metas;
 
-namespace Vidora.Infrastructure.Mappings;
+namespace Vidora.Infrastructure.Api.Mapping;
 
-public class MovieDetailMappingProfile : Profile
+public class MovieMappingProfile : Profile
 {
-    public MovieDetailMappingProfile()
+    public MovieMappingProfile()
     {
-        // 1. Map thành viên (Actor/Director)
-        CreateMap<MovieMemberDto, MovieMemberResult>();
+        CreateMap<GenreResponse, GenreResult>();
 
-        // 2. Map chi tiết phim
-        CreateMap<MovieDetailDataDto, MovieDetailResult>()
+        CreateMap<MembersResponseDto, MemberResult>();
+
+        CreateMap<GenreData, Genre>();
+
+
+        CreateMap<MemberData, MovieMemberResult>();
+
+        CreateMap<MovieData, MovieDetailResult>()
             .ForCtorParam("MovieId", opt => opt.MapFrom(src => src.MovieId))
             .ForCtorParam("Title", opt => opt.MapFrom(src => src.Title))
             .ForCtorParam("Description", opt => opt.MapFrom(src => src.Description))
@@ -21,9 +29,18 @@ public class MovieDetailMappingProfile : Profile
             .ForCtorParam("BannerUrl", opt => opt.MapFrom(src => src.BannerUrl))
             .ForCtorParam("TrailerUrl", opt => opt.MapFrom(src => src.TrailerUrl))
             .ForCtorParam("MovieUrl", opt => opt.MapFrom(src => src.MovieUrl))
-            // Ép kiểu sang double để tránh lỗi convert từ số nguyên 0 sang số thực
             .ForCtorParam("AvgRating", opt => opt.MapFrom(src => (double)src.AvgRating))
             .ForCtorParam("Genres", opt => opt.MapFrom(src => src.Genres))
             .ForCtorParam("Actors", opt => opt.MapFrom(src => src.Actors));
+
+
+        //
+        CreateMap<AdminMovieDto, AdminMovie>();
+
+        CreateMap<PaginationMeta, PaginationResult>();
+
+        CreateMap<MoviePaginationResponse, MoviePaginationResult>()
+            .ForCtorParam("Movies", opt => opt.MapFrom(src => src.Data))
+            .ForCtorParam("Pagination", opt => opt.MapFrom(src => src.Pagination));
     }
 }

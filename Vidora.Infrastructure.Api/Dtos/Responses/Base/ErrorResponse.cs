@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace Vidora.Infrastructure.Api.Dtos.Responses;
+namespace Vidora.Infrastructure.Api.Dtos.Responses.Base;
 
-internal record ErrorResponse(
+public record ErrorResponse(
     object Error,
     HttpStatusCode StatusCode,
     string? Message = null

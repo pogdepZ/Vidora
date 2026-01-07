@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Vidora.Core.Contracts.Results;
+using Vidora.Core.Helpers;
 using Vidora.Core.Interfaces.Api;
-using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
+using Vidora.Infrastructure.Api.Clients;
+using Vidora.Infrastructure.Api.Dtos.Responses;
 
 namespace Vidora.Infrastructure.Api.Services;
 
@@ -15,11 +17,6 @@ public class UserApiService : IUserApiService
     private readonly ApiClient _apiClient;
     private readonly IMapper _mapper;
 
-    private static readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     public UserApiService(ApiClient apiClient, IMapper mapper)
     {
         _apiClient = apiClient;
@@ -27,7 +24,6 @@ public class UserApiService : IUserApiService
     }
 
     public async Task<Result<UserPaginationResult>> GetUsersAsync(
-        string token,
         int page,
         int limit,
         string? search = null,
@@ -55,15 +51,13 @@ public class UserApiService : IUserApiService
             if (!string.IsNullOrWhiteSpace(status))
                 query += $"&status={Uri.EscapeDataString(status.Trim().ToLowerInvariant())}";
 
-            var response = await _apiClient.GetAsync(query, token);
+            var response = await _apiClient.GetAsync(query);
             var rawJson = await response.Content.ReadAsStringAsync();
-
-            System.Diagnostics.Debug.WriteLine($"[GetUsersAsync] Raw JSON: {rawJson}");
 
             if (!response.IsSuccessStatusCode)
                 return Result.Failure<UserPaginationResult>("Không thể tải danh sách người dùng.");
 
-            var responseDto = JsonSerializer.Deserialize<UserPaginationResponseDto>(rawJson, _jsonOptions);
+            var responseDto = JsonSerializer.Deserialize<UserPaginationResponse>(rawJson, JsonHelper.CamelCaseOptions);
 
             if (responseDto == null || !responseDto.Success)
                 return Result.Failure<UserPaginationResult>("Dữ liệu từ server không hợp lệ.");
@@ -78,11 +72,11 @@ public class UserApiService : IUserApiService
         }
     }
 
-    public async Task<Result<UserDetailResult>> GetUserDetailAsync(string token, int userId)
+    public async Task<Result<UserDetailResult>> GetUserDetailAsync(int userId)
     {
         try
         {
-            var response = await _apiClient.GetAsync($"api/users/{userId}", token);
+            var response = await _apiClient.GetAsync($"api/users/{userId}");
             var rawJson = await response.Content.ReadAsStringAsync();
 
             System.Diagnostics.Debug.WriteLine($"[GetUserDetailAsync] Raw JSON: {rawJson}");
@@ -90,7 +84,7 @@ public class UserApiService : IUserApiService
             if (!response.IsSuccessStatusCode)
                 return Result.Failure<UserDetailResult>("Không thể tải thông tin chi tiết người dùng.");
 
-            var responseDto = JsonSerializer.Deserialize<UserDetailResponseDto>(rawJson, _jsonOptions);
+            var responseDto = JsonSerializer.Deserialize<UserDetailResponse>(rawJson, JsonHelper.CamelCaseOptions);
 
             if (responseDto == null || !responseDto.Success)
                 return Result.Failure<UserDetailResult>("Dữ liệu chi tiết người dùng không hợp lệ.");
@@ -105,11 +99,11 @@ public class UserApiService : IUserApiService
         }
     }
 
-    public async Task<Result<string>> ToggleUserStatusAsync(string token, int userId)
+    public async Task<Result<string>> ToggleUserStatusAsync(int userId)
     {
         try
         {
-            var response = await _apiClient.PutAsync($"api/users/{userId}/status", null, token);
+            var response = await _apiClient.PutAsync($"api/users/{userId}/status", null);
             var rawJson = await response.Content.ReadAsStringAsync();
 
             System.Diagnostics.Debug.WriteLine($"[ToggleUserStatusAsync] Raw JSON: {rawJson}");
@@ -119,7 +113,7 @@ public class UserApiService : IUserApiService
                 return Result.Failure<string>($"Không thể thay đổii trạng thái người dùng: {rawJson}");
             }
 
-            var responseDto = JsonSerializer.Deserialize<UserStatusResponseDto>(rawJson, _jsonOptions);
+            var responseDto = JsonSerializer.Deserialize<UserStatusResponse>(rawJson, JsonHelper.CamelCaseOptions);
 
             if (responseDto == null || !responseDto.Success)
                 return Result.Failure<string>("Cập nhật trạng thái thất bại.");

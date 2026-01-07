@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace Vidora.Infrastructure.Api.Dtos.Responses;
+namespace Vidora.Infrastructure.Api.Dtos.Responses.Base;
 
-internal abstract record ApiResponse(
+public abstract record ApiResponse(
     HttpStatusCode StatusCode,
     string? Message = null)
 {

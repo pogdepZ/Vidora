@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 using Vidora.Core.Contracts.Commands;
 using Vidora.Core.Contracts.Results;
 using Vidora.Core.Interfaces.Api;
+using Vidora.Infrastructure.Api.Clients;
 using Vidora.Infrastructure.Api.Dtos.Requests;
-using Vidora.Infrastructure.Api.Dtos.Responses;
+using Vidora.Infrastructure.Api.Dtos.Responses.Base;
 using Vidora.Infrastructure.Api.Dtos.Responses.Datas;
 using Vidora.Infrastructure.Api.Extensions;
 
 namespace Vidora.Infrastructure.Api.Services;
 
-using LoginSuccessResponse = SuccessResponse<LoginResponseData>;
-using RegisterSuccessResponse = SuccessResponse<RegisterResponseData>;
+using LoginSuccessResponse = SuccessResponse<LoginData>;
+using RegisterSuccessResponse = SuccessResponse<RegisterData>;
 
 public class AuthApiService : IAuthApiService
 {
@@ -34,7 +35,7 @@ public class AuthApiService : IAuthApiService
             body: req
             );
 
-        var apiRes = await httpRes.ReadAsync<LoginResponseData>();
+        var apiRes = await httpRes.ReadAsync<LoginData>();
           
         if (apiRes is not LoginSuccessResponse success)
         {
@@ -64,7 +65,7 @@ public class AuthApiService : IAuthApiService
             body: req
         );
 
-        var apiRes = await httpRes.ReadAsync<RegisterResponseData>();
+        var apiRes = await httpRes.ReadAsync<RegisterData>();
 
         if (apiRes is not RegisterSuccessResponse success)
         {

@@ -1,6 +1,6 @@
 ﻿namespace Vidora.Infrastructure.Api.Dtos.Responses.Datas;
 
-internal record LoginResponseData(
+public record LoginData(
     UserData User,
     string AccessToken,
     string ExpiresIn
