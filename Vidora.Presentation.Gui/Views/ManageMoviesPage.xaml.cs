@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Vidora.Core.Entities;
 using Vidora.Core.Contracts.Results;
 using Vidora.Presentation.Gui.ViewModels;
@@ -15,6 +16,31 @@ public sealed partial class ManageMoviesPage : Page
     public ManageMoviesPage()
     {
         InitializeComponent();
+    }
+
+    private int _notificationId = 0;
+
+    /// <summary>
+    /// Hiển thị thông báo InfoBar
+    /// </summary>
+    private async void ShowNotification(string title, string message, InfoBarSeverity severity = InfoBarSeverity.Success, int autoHideSeconds = 3)
+    {
+        NotificationInfoBar.Title = title;
+        NotificationInfoBar.Message = message;
+        NotificationInfoBar.Severity = severity;
+        NotificationInfoBar.IsOpen = true;
+
+        int currentId = ++_notificationId;
+
+        // Tự động ẩn sau vài giây
+        if (autoHideSeconds > 0)
+        {
+            await Task.Delay(autoHideSeconds * 1000);
+            if (currentId == _notificationId)
+            {
+                NotificationInfoBar.IsOpen = false;
+            }
+        }
     }
 
     private async void OnAddMovieButtonClick(object sender, RoutedEventArgs e)
@@ -100,8 +126,26 @@ public sealed partial class ManageMoviesPage : Page
         var result = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
         {
-            if (ViewModel.AddMovieCommand.CanExecute(null))
+            try
+            {
+                // Giả sử AddMovieCommand trả về một kết quả (Result)
                 await ViewModel.AddMovieCommand.ExecuteAsync(null);
+
+                if (ViewModel.IsSuccess) // Bạn nên có thuộc tính này trong ViewModel
+                {
+                    ShowNotification("Thành công", "Đã thêm phim mới vào hệ thống.", InfoBarSeverity.Success);
+                }
+                else
+                {
+                    // Thông báo lỗi nếu API trả về thất bại (ví dụ: trùng tên, link phim hỏng)
+                    ShowNotification("Lỗi nghiệp vụ", ViewModel.ErrorMessage ?? "Không thể lưu phim.", InfoBarSeverity.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Thông báo lỗi nghiêm trọng (ví dụ: mất mạng, lỗi server 500)
+                ShowNotification("Lỗi hệ thống", $"Đã xảy ra lỗi: {ex.Message}", InfoBarSeverity.Error, 5);
+            }
         }
     }
 
@@ -117,14 +161,7 @@ public sealed partial class ManageMoviesPage : Page
 
         if (movieDetail == null)
         {
-            var errorDialog = new ContentDialog
-            {
-                Title = "Lỗi",
-                Content = "Không thể tải thông tin chi tiết phim.",
-                CloseButtonText = "Đóng",
-                XamlRoot = this.Content.XamlRoot
-            };
-            await errorDialog.ShowAsync();
+            ShowNotification("Lỗi", "Không thể tải thông tin chi tiết phim.", InfoBarSeverity.Error);
             return;
         }
 
@@ -212,9 +249,12 @@ public sealed partial class ManageMoviesPage : Page
 
         var scrollViewer = new ScrollViewer { Content = stackPanel, MaxHeight = 600, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
 
+        // Lưu tên phim để hiển thị thông báo
+        var movieTitle = movie.Title;
+
         ContentDialog dialog = new ContentDialog
         {
-            Title = $"Chi tiết phim: {movie.Title}",
+            Title = $"Chi tiết phim: {movieTitle}",
             Content = scrollViewer,
             PrimaryButtonText = "Lưu thay đổi",
             CloseButtonText = "Hủy",
@@ -226,7 +266,12 @@ public sealed partial class ManageMoviesPage : Page
         if (result == ContentDialogResult.Primary)
         {
             if (ViewModel.UpdateMovieCommand.CanExecute(null))
+            {
                 await ViewModel.UpdateMovieCommand.ExecuteAsync(null);
+                
+                // Hiển thị thông báo thành công
+                ShowNotification("Thành công", $"Đã cập nhật phim '{movieTitle}' thành công!", InfoBarSeverity.Success);
+            }
         }
     }
 
@@ -349,7 +394,11 @@ public sealed partial class ManageMoviesPage : Page
 
             if (result == ContentDialogResult.Primary)
             {
+                var movieTitle = movie.Title;
                 await ViewModel.ToggleDeleteCommand.ExecuteAsync(movie);
+                
+                // Hiển thị thông báo thành công
+                ShowNotification("Thành công", $"Đã xóa phim '{movieTitle}' thành công!", InfoBarSeverity.Success);
             }
         }
     }

@@ -3,6 +3,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Vidora.Core.Helpers;
@@ -13,6 +14,14 @@ namespace Vidora.Infrastructure.Api.Services;
 public class ApiClient
 {
     private readonly HttpClient _httpClient;
+
+    // CamelCase options cho các API yêu cầu camelCase (như movies API)
+    public static readonly JsonSerializerOptions CamelCaseOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+    };
 
     public ApiClient(IOptions<ApiOptions> options)
     {
@@ -39,6 +48,15 @@ public class ApiClient
         CancellationToken ct = default)
         => SendAsync(HttpMethod.Post, url, body, token, headers, ct);
 
+    // POST với CamelCase
+    public Task<HttpResponseMessage> PostCamelCaseAsync(
+        string url,
+        object? body,
+        string? token = null,
+        Action<HttpRequestHeaders>? headers = null,
+        CancellationToken ct = default)
+        => SendAsync(HttpMethod.Post, url, body, token, headers, ct, CamelCaseOptions);
+
     public Task<HttpResponseMessage> PutAsync(
         string url,
         object? body,
@@ -47,6 +65,15 @@ public class ApiClient
         CancellationToken ct = default)
         => SendAsync(HttpMethod.Put, url, body, token, headers, ct);
 
+    // PUT với CamelCase
+    public Task<HttpResponseMessage> PutCamelCaseAsync(
+        string url,
+        object? body,
+        string? token = null,
+        Action<HttpRequestHeaders>? headers = null,
+        CancellationToken ct = default)
+        => SendAsync(HttpMethod.Put, url, body, token, headers, ct, CamelCaseOptions);
+
     public Task<HttpResponseMessage> DeleteAsync(
         string url,
         string? token = null,
@@ -54,7 +81,6 @@ public class ApiClient
         CancellationToken ct = default)
         => SendAsync(HttpMethod.Delete, url, null, token, headers, ct);
 
-    // Thêm vào ApiClient.cs
     public Task<HttpResponseMessage> PatchAsync(
         string url,
         object? body,
@@ -69,13 +95,14 @@ public class ApiClient
         object? body,
         string? token,
         Action<HttpRequestHeaders>? headers,
-        CancellationToken ct)
+        CancellationToken ct,
+        JsonSerializerOptions? jsonOptions = null)
     {
         using var request = new HttpRequestMessage(method, url);
 
-        // JSON body
+        // JSON body - sử dụng options được cung cấp hoặc mặc định là SnakeCaseOptions
         if (body != null)
-            request.Content = JsonContent.Create(body, options: JsonHelper.SnakeCaseOptions);
+            request.Content = JsonContent.Create(body, options: jsonOptions ?? JsonHelper.SnakeCaseOptions);
 
         // Bearer token
         if (!string.IsNullOrWhiteSpace(token))
@@ -89,6 +116,4 @@ public class ApiClient
 
         return response;
     }
-
-   
 }

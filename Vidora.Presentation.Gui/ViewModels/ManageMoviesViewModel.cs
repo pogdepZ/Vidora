@@ -29,6 +29,14 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     private readonly IMovieApiService _movieApiService;
     private readonly ISessionStateService _sessionService;
 
+    // Thuộc tính lưu thông báo lỗi cụ thể từ API
+    [ObservableProperty]
+    private string _errorMessage;
+
+    // Thuộc tính kiểm tra trạng thái thành công/thất bại
+    [ObservableProperty]
+    private bool _isSuccess;
+
     [ObservableProperty]
     private ObservableCollection<AdminMovie> _movies = new();
 
@@ -267,6 +275,8 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     private async Task UpdateMovieAsync()
     {
         if (string.IsNullOrWhiteSpace(EditMovieTitle)) return;
+        IsSuccess = false; // Reset trạng thái trước khi gọi API
+        ErrorMessage = string.Empty;
 
         IsLoading = true;
         try
@@ -288,6 +298,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
             );
 
             var result = await _updateMovieUseCase.ExecuteAsync(command);
+            IsSuccess = result.IsSuccess;
 
             if (result.IsSuccess)
             {
@@ -297,11 +308,14 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
             }
             else
             {
+                ErrorMessage = result.Error ?? "Lỗi cập nhật phim.";
                 System.Diagnostics.Debug.WriteLine($"Lỗi cập nhật phim: {result.Error}");
             }
         }
         catch (Exception ex)
         {
+            IsSuccess = false;
+            ErrorMessage = ex.Message;
             System.Diagnostics.Debug.WriteLine($"Lỗi hệ thống khi cập nhật: {ex.Message}");
         }
         finally
@@ -329,8 +343,12 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     {
         if (movie == null) return;
 
+        IsSuccess = false;
+        ErrorMessage = string.Empty;
+
         // Gọi UseCase - Token đã được UseCase tự lấy từ SessionService
         var result = await _deleteMovieUseCase.ExecuteAsync(movie.Id);
+        IsSuccess = result.IsSuccess;
 
         if (result.IsSuccess)
         {
@@ -343,6 +361,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
         }
         else
         {
+            ErrorMessage = result.Error ?? "Lỗi khi xóa phim.";
             // Log lỗi hoặc hiển thị Dialog báo lỗi cho người dùng
             System.Diagnostics.Debug.WriteLine($"[ToggleDelete Error]: {result.Error}");
         }
@@ -372,6 +391,9 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
     {
         if (string.IsNullOrWhiteSpace(NewMovieTitle)) return;
 
+        IsSuccess = false; // Reset trạng thái trước khi gọi API
+        ErrorMessage = string.Empty;
+
         IsLoading = true;
         try
         {
@@ -395,6 +417,7 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
 
             // 3. Gọi UseCase
             var result = await _createMovieUseCase.ExecuteAsync(command);
+            IsSuccess = result.IsSuccess;
 
             if (result.IsSuccess)
             {
@@ -408,11 +431,14 @@ public partial class ManageMoviesViewModel : ObservableRecipient, INavigationAwa
             }
             else
             {
+                ErrorMessage = result.Error ?? "Không thể tạo phim.";
                 System.Diagnostics.Debug.WriteLine($"Lỗi thêm phim: {result.Error}");
             }
         }
         catch (Exception ex)
         {
+            IsSuccess = false;
+            ErrorMessage = $"Lỗi hệ thống: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Lỗi hệ thống khi thêm: {ex.Message}");
         }
         finally
