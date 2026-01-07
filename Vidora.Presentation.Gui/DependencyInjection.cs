@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddSingleton<IPageService, PageService>();
         services.AddSingleton<IInfoBarService, InfoBarService>();
         services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
+        services.AddSingleton<IPdfExportService, PdfExportService>();
 
 
         // Views

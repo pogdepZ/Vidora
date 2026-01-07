@@ -16,20 +16,24 @@ namespace Vidora.Presentation.Gui.ViewModels;
 
 public partial class AdminDashboardViewModel : ObservableRecipient, INavigationAware
 {
-
-    public async Task OnNavigatedFromAsync()
-    {
-
-    }
-
     private readonly GetDashboardStatsUseCase _getStatsUseCase;
+    private readonly IPdfExportService _pdfExportService;
+    private readonly IInfoBarService _infoBarService;
 
     [ObservableProperty] private AdminDashboardResult? _stats;
     [ObservableProperty] private bool _isLoading;
+    [ObservableProperty] private bool _isExporting;
+
     public string CurrentDate => DateTime.Now.ToString("dd MMMM, yyyy");
-    public AdminDashboardViewModel(GetDashboardStatsUseCase getStatsUseCase)
+
+    public AdminDashboardViewModel(
+        GetDashboardStatsUseCase getStatsUseCase,
+        IPdfExportService pdfExportService,
+        IInfoBarService infoBarService)
     {
         _getStatsUseCase = getStatsUseCase;
+        _pdfExportService = pdfExportService;
+        _infoBarService = infoBarService;
     }
 
     public async Task OnNavigatedToAsync(object parameter)
@@ -43,29 +47,55 @@ public partial class AdminDashboardViewModel : ObservableRecipient, INavigationA
             System.Diagnostics.Debug.WriteLine("===== API DATA START =====");
             System.Diagnostics.Debug.WriteLine(jsonDebug);
             System.Diagnostics.Debug.WriteLine("===== API DATA END =====");
-            //if (Stats.RevenueData == null || Stats.RevenueData.Count == 0 || Stats.RevenueData.Sum() == 0)
-            //{
-            //    // Tạo mảng giả lập 30 ngày nhấp nhô
-            //    var random = new Random();
-            //    var fakeRevenue = new List<double>();
-            //    double lastValue = 500000; // Giá trị khởi điểm (500k VND)
-
-            //    for (int i = 0; i < 30; i++)
-            //    {
-            //        // Tạo biến động từ -20% đến +30% so với ngày trước đó
-            //        double change = lastValue * (random.NextDouble() * 0.5 - 0.2);
-            //        lastValue = Math.Max(100000, lastValue + change); // Đảm bảo không dưới 100k
-            //        fakeRevenue.Add(lastValue);
-            //    }
-
-            //    // Gán lại dữ liệu giả lập vào Stats (Dùng record 'with' expression)
-            //    Stats = Stats with { RevenueData = fakeRevenue };
-            //}
         }
         else
         {
             System.Diagnostics.Debug.WriteLine($"[API Check] failed");
         }
-            IsLoading = false;
+        IsLoading = false;
     }
+
+    public async Task OnNavigatedFromAsync()
+    {
+
+    }
+
+    /// <summary>
+    /// Command to export dashboard data to PDF.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanExportToPdf))]
+    private async Task ExportToPdfAsync()
+    {
+        if (Stats == null)
+        {
+            _infoBarService.ShowError("No data available to export.");
+            return;
+        }
+
+        IsExporting = true;
+        try
+        {
+            var success = await _pdfExportService.ExportDashboardToPdfAsync(Stats);
+            if (success)
+            {
+                _infoBarService.ShowSuccess("PDF report exported successfully!");
+            }
+            else
+            {
+                // User cancelled or export failed silently
+                System.Diagnostics.Debug.WriteLine("[ExportToPdf] Export cancelled or failed");
+            }
+        }
+        catch (Exception ex)
+        {
+            _infoBarService.ShowError($"Error exporting PDF: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[ExportToPdf] Error: {ex}");
+        }
+        finally
+        {
+            IsExporting = false;
+        }
+    }
+
+    private bool CanExportToPdf() => Stats != null && !IsExporting && !IsLoading;
 }
