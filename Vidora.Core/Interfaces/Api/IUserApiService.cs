@@ -17,7 +17,7 @@ public interface IUserApiService
         string token,
         int page,
         int limit,
-        string? fullName = null,
+        string? search = null,
         string? email = null,
         string? username = null,
         string? role = null,

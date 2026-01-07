@@ -62,7 +62,6 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Search by FullName/Email/Username -->
@@ -74,17 +73,8 @@
                             Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             QuerySubmitted="OnSearchQuerySubmitted"/>
 
-                <!-- Role Filter -->
-                <ComboBox Grid.Column="1"
-                          Margin="16,0,0,0"
-                          MinWidth="150"
-                          PlaceholderText="Vai trò"
-                          VerticalAlignment="Center"
-                          ItemsSource="{x:Bind ViewModel.RoleOptions}"
-                          SelectedItem="{x:Bind ViewModel.SelectedRole, Mode=TwoWay}"/>
-
                 <!-- Status Filter -->
-                <ComboBox Grid.Column="2"
+                <ComboBox Grid.Column="1"
                           Margin="16,0,0,0"
                           MinWidth="150"
                           PlaceholderText="Trạng thái"
@@ -93,7 +83,7 @@
                           SelectedItem="{x:Bind ViewModel.SelectedStatus, Mode=TwoWay}"/>
 
                 <!-- Search Button -->
-                <Button Grid.Column="3"
+                <Button Grid.Column="2"
                         Margin="16,0,0,0"
                         Style="{StaticResource AccentButtonStyle}"
                         Command="{x:Bind ViewModel.SearchCommand}"
@@ -105,7 +95,7 @@
                 </Button>
 
                 <!-- Clear Filters Button -->
-                <Button Grid.Column="4"
+                <Button Grid.Column="3"
                         Margin="8,0,0,0"
                         Command="{x:Bind ViewModel.ClearFiltersCommand}"
                         VerticalAlignment="Center"

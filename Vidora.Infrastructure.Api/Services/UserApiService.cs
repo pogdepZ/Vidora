@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using CSharpFunctionalExtensions;
 using System;
 using System.Linq;
@@ -30,7 +30,7 @@ public class UserApiService : IUserApiService
         string token,
         int page,
         int limit,
-        string? fullName = null,
+        string? search = null,
         string? email = null,
         string? username = null,
         string? role = null,
@@ -40,20 +40,20 @@ public class UserApiService : IUserApiService
         {
             var query = $"api/users?page={page}&limit={limit}";
 
-            if (!string.IsNullOrWhiteSpace(fullName))
-                query += $"&fullName={Uri.EscapeDataString(fullName)}";
+            if (!string.IsNullOrWhiteSpace(search))
+                query += $"&search={Uri.EscapeDataString(search.Trim())}";
 
             if (!string.IsNullOrWhiteSpace(email))
-                query += $"&email={Uri.EscapeDataString(email)}";
+                query += $"&email={Uri.EscapeDataString(email.Trim())}";
 
             if (!string.IsNullOrWhiteSpace(username))
-                query += $"&username={Uri.EscapeDataString(username)}";
+                query += $"&username={Uri.EscapeDataString(username.Trim())}";
 
             if (!string.IsNullOrWhiteSpace(role))
-                query += $"&role={Uri.EscapeDataString(role)}";
+                query += $"&role={Uri.EscapeDataString(role.Trim().ToLowerInvariant())}";
 
             if (!string.IsNullOrWhiteSpace(status))
-                query += $"&status={Uri.EscapeDataString(status)}";
+                query += $"&status={Uri.EscapeDataString(status.Trim().ToLowerInvariant())}";
 
             var response = await _apiClient.GetAsync(query, token);
             var rawJson = await response.Content.ReadAsStringAsync();
@@ -61,12 +61,12 @@ public class UserApiService : IUserApiService
             System.Diagnostics.Debug.WriteLine($"[GetUsersAsync] Raw JSON: {rawJson}");
 
             if (!response.IsSuccessStatusCode)
-                return Result.Failure<UserPaginationResult>("Kh�ng th? t?i danh s�ch ng??i d�ng.");
+                return Result.Failure<UserPaginationResult>("Không thể tải danh sách người dùng.");
 
             var responseDto = JsonSerializer.Deserialize<UserPaginationResponseDto>(rawJson, _jsonOptions);
 
             if (responseDto == null || !responseDto.Success)
-                return Result.Failure<UserPaginationResult>("D? li?u t? server kh�ng h?p l?.");
+                return Result.Failure<UserPaginationResult>("Dữ liệu từ server không hợp lệ.");
 
             var result = _mapper.Map<UserPaginationResult>(responseDto);
             return Result.Success(result);
@@ -74,7 +74,7 @@ public class UserApiService : IUserApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[GetUsersAsync] Error: {ex.Message}");
-            return Result.Failure<UserPaginationResult>($"L?i: {ex.Message}");
+            return Result.Failure<UserPaginationResult>($"Lỗi: {ex.Message}");
         }
     }
 
@@ -88,12 +88,12 @@ public class UserApiService : IUserApiService
             System.Diagnostics.Debug.WriteLine($"[GetUserDetailAsync] Raw JSON: {rawJson}");
 
             if (!response.IsSuccessStatusCode)
-                return Result.Failure<UserDetailResult>("Kh�ng th? t?i th�ng tin chi ti?t ng??i d�ng.");
+                return Result.Failure<UserDetailResult>("Không thể tải thông tin chi tiết người dùng.");
 
             var responseDto = JsonSerializer.Deserialize<UserDetailResponseDto>(rawJson, _jsonOptions);
 
             if (responseDto == null || !responseDto.Success)
-                return Result.Failure<UserDetailResult>("D? li?u chi ti?t ng??i d�ng kh�ng h?p l?.");
+                return Result.Failure<UserDetailResult>("Dữ liệu chi tiết người dùng không hợp lệ.");
 
             var result = _mapper.Map<UserDetailResult>(responseDto.Data);
             return Result.Success(result);
@@ -101,7 +101,7 @@ public class UserApiService : IUserApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[GetUserDetailAsync] Error: {ex.Message}");
-            return Result.Failure<UserDetailResult>($"L?i: {ex.Message}");
+            return Result.Failure<UserDetailResult>($"Lỗii: {ex.Message}");
         }
     }
 
@@ -116,20 +116,20 @@ public class UserApiService : IUserApiService
 
             if (!response.IsSuccessStatusCode)
             {
-                return Result.Failure<string>($"Kh�ng th? thay ??i tr?ng th�i ng??i d�ng: {rawJson}");
+                return Result.Failure<string>($"Không thể thay đổii trạng thái người dùng: {rawJson}");
             }
 
             var responseDto = JsonSerializer.Deserialize<UserStatusResponseDto>(rawJson, _jsonOptions);
 
             if (responseDto == null || !responseDto.Success)
-                return Result.Failure<string>("C?p nh?t tr?ng th�i th?t b?i.");
+                return Result.Failure<string>("Cập nhật trạng thái thất bại.");
 
             return Result.Success(responseDto.Data?.Status ?? "UNKNOWN");
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[ToggleUserStatusAsync] Error: {ex.Message}");
-            return Result.Failure<string>($"L?i: {ex.Message}");
+            return Result.Failure<string>($"Lỗi: {ex.Message}");
         }
     }
 }

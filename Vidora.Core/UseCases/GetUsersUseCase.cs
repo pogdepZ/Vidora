@@ -23,7 +23,7 @@ public class GetUsersUseCase
     public async Task<Result<UserPaginationResult>> ExecuteAsync(
         int page,
         int limit = 10,
-        string? fullName = null,
+        string? search = null,
         string? email = null,
         string? username = null,
         string? role = null,
@@ -38,7 +38,7 @@ public class GetUsersUseCase
             token, 
             page, 
             limit, 
-            fullName, 
+            search, 
             email, 
             username, 
             role, 

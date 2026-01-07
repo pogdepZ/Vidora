@@ -18,25 +18,25 @@ public class AdminUserResult
     public string? Gender { get; set; }
     public DateTime? Birthday { get; set; }
 
-    // Computed property ?? hi?n th? status d? ??c
+    // Computed property de hien thi status de doc
     public string StatusDisplayText => Status?.ToUpper() switch
     {
-        "ACTIVE" => "Ho?t ??ng",
-        "LOCKED" => "?ã khóa",
+        "ACTIVE" => "Active",
+        "LOCKED" => "Locked",
         _ => Status ?? "N/A"
     };
 
-    // Computed property ?? hi?n th? role d? ??c
+    // Computed property de hien thi role de doc
     public string RoleDisplayText => Role?.ToUpper() switch
     {
-        "ADMIN" => "Qu?n tr? viên",
-        "USER" => "Ng??i dùng",
+        "ADMIN" => "Admin",
+        "USER" => "User",
         _ => Role ?? "N/A"
     };
 
-    // Computed property cho màu status
+    // Computed property cho mau status
     public bool IsActive => Status?.ToUpper() == "ACTIVE";
 
-    // Computed property cho ngày t?o d?ng string
+    // Computed property cho ngay tao dang string
     public string CreatedAtDisplay => CreatedAt.ToString("dd/MM/yyyy");
 }

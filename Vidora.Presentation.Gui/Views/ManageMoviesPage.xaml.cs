@@ -1,11 +1,13 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Vidora.Core.Entities;
 using Vidora.Core.Contracts.Results;
+using Vidora.Core.Entities;
 using Vidora.Presentation.Gui.ViewModels;
 
 namespace Vidora.Presentation.Gui.Views;
@@ -358,7 +360,7 @@ public sealed partial class ManageMoviesPage : Page
             CornerRadius = new CornerRadius(4),
             Padding = new Thickness(6, 2, 6, 2),
             Margin = new Thickness(0, 0, 10, 0),
-            Child = new TextBlock { Text = role, FontSize = 11, FontWeight = Microsoft.UI.Text.FontWeights.Bold }
+            Child = new TextBlock { Text = role, FontSize = 11, Foreground= new SolidColorBrush(Colors.Black), FontWeight = Microsoft.UI.Text.FontWeights.Bold }
         };
 
         var nameTxt = new TextBlock { Text = member.Name, VerticalAlignment = VerticalAlignment.Center };

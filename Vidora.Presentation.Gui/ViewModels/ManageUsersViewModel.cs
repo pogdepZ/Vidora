@@ -103,7 +103,7 @@ public partial class ManageUsersViewModel : ObservableRecipient, INavigationAwar
             var result = await _getUsersUseCase.ExecuteAsync(
                 page: CurrentPage,
                 limit: 10,
-                fullName: string.IsNullOrWhiteSpace(SearchText) ? null : SearchText,
+                search: string.IsNullOrWhiteSpace(SearchText) ? null : SearchText,
                 email: null,
                 username: null,
                 role: roleFilter,
