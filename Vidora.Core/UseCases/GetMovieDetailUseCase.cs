@@ -23,10 +23,6 @@ public class GetMovieDetailUseCase
 
     public async Task<Result<MovieDetailResult>> ExecuteAsync(int movieId)
     {
-        var token = _sessionService.CurrentSession?.AccessToken?.Token;
-        if (string.IsNullOrEmpty(token))
-            return Result.Failure<MovieDetailResult>("Phiên đăng nhập hết hạn.");
-
         return await _movieApiService.GetMovieDetailAsync(movieId);
     }
 }

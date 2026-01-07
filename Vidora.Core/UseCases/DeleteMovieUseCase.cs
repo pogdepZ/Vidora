@@ -19,12 +19,6 @@ public class DeleteMovieUseCase
 
     public async Task<Result<bool>> ExecuteAsync(int movieId)
     {
-        // 1. Lấy token giống như GetMovieDetailUseCase
-        var token = _sessionService.CurrentSession?.AccessToken?.Token;
-
-        if (string.IsNullOrEmpty(token))
-            return Result.Failure<bool>("Phiên đăng nhập hết hạn.");
-
         if (movieId <= 0)
             return Result.Failure<bool>("ID phim không hợp lệ.");
 

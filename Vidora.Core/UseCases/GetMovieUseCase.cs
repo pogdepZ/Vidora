@@ -25,9 +25,6 @@ namespace Vidora.Core.UseCases
         int? genreId = null,
         int? releaseYear = null)
         {
-            var token = _sessionService.CurrentSession?.AccessToken?.Token;
-            if (string.IsNullOrEmpty(token)) return Result.Failure<MoviePaginationResult>("Phiên đăng nhập hết hạn.");
-
             return await _movieApiService.GetAdminMoviesAsync(page, limit, title, genreId, releaseYear);
         }
     }

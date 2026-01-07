@@ -33,8 +33,7 @@ public class StatsApiService : IStatsApiService
         if (!response.IsSuccessStatusCode)
             return Result.Failure<AdminDashboardResult>("Không thể tải dữ liệu thống kê.");
 
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var dto = await response.Content.ReadFromJsonAsync<DashboardResponse>(options);
+        var dto = await response.Content.ReadFromJsonAsync<DashboardResponse>(JsonHelper.CamelCaseOptions);
 
         var result = _mapper.Map<AdminDashboardResult>(dto);
         return Result.Success(result);

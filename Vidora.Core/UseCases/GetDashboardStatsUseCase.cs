@@ -23,9 +23,6 @@ namespace Vidora.Core.UseCases
 
         public async Task<Result<AdminDashboardResult>> ExecuteAsync()
         {
-            var token = _sessionState.CurrentSession?.AccessToken?.Token;
-            if (string.IsNullOrEmpty(token)) return Result.Failure<AdminDashboardResult>("Unauthorized");
-
             return await _statsApi.GetDashboardStatsAsync();
         }
     }

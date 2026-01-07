@@ -4,15 +4,8 @@ using Vidora.Core.Contracts.Results;
 
 namespace Vidora.Core.Interfaces.Api;
 
-/// <summary>
-/// Interface cho User API Service
-/// </summary>
 public interface IUserApiService
 {
-    /// <summary>
-    /// L?y danh sách users có pagination và filter
-    /// GET /api/users
-    /// </summary>
     Task<Result<UserPaginationResult>> GetUsersAsync(
         int page,
         int limit,
@@ -22,14 +15,7 @@ public interface IUserApiService
         string? role = null,
         string? status = null);
 
-    /// <summary>
-    /// L?y chi ti?t user bao g?m subscriptions và orders
-    /// GET /api/users/{id}
-    /// </summary>
     Task<Result<UserDetailResult>> GetUserDetailAsync(int userId);
-    /// <summary>
-    /// Khóa/M? khóa user (Toggle Status)
-    /// PUT /api/users/{id}/status
-    /// </summary>
+
     Task<Result<string>> ToggleUserStatusAsync(int userId);
 }

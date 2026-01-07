@@ -29,11 +29,6 @@ public class GetUsersUseCase
         string? role = null,
         string? status = null)
     {
-        var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
-
-        if (string.IsNullOrEmpty(token))
-            return Result.Failure<UserPaginationResult>("Phiên ??ng nh?p không h?p l?.");
-
         return await _userApiService.GetUsersAsync( 
             page, 
             limit, 

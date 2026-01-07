@@ -20,11 +20,6 @@ public class UpdateMovieUseCase
 
     public async Task<Result<bool>> ExecuteAsync(UpdateMovieCommand command)
     {
-        var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
-        if (string.IsNullOrEmpty(token))
-            return Result.Failure<bool>("Phiên ??ng nh?p h?t h?n.");
-
-        // Build the movie data object matching API format
         var movieData = new
         {
             title = command.Title,

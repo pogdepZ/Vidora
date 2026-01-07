@@ -22,9 +22,6 @@ public class CreateMovieUseCase
 
     public async Task<Result<bool>> ExecuteAsync(CreateMovieCommand command)
     {
-        var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
-        if (string.IsNullOrEmpty(token)) return Result.Failure<bool>("Phiên đăng nhập hết hạn.");
-
         // 1. Chuyển GenreIds thành format server yêu cầu: [{ genresId: 1 }, { genresId: 2 }]
         var genresPayload = command.GenreIds.Select(id => new { genresId = id }).ToList();
 

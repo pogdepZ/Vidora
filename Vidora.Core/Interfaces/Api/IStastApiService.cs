@@ -6,10 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Vidora.Core.Contracts.Results;
 
-namespace Vidora.Core.Interfaces.Api
+namespace Vidora.Core.Interfaces.Api;
+
+public interface IStatsApiService
 {
-    public interface IStatsApiService
-    {
-        Task<Result<AdminDashboardResult>> GetDashboardStatsAsync();
-    }
+    Task<Result<AdminDashboardResult>> GetDashboardStatsAsync();
 }

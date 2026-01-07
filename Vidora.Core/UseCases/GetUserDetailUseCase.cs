@@ -6,9 +6,6 @@ using Vidora.Core.Interfaces.Api;
 
 namespace Vidora.Core.UseCases;
 
-/// <summary>
-/// UseCase ?? l?y chi ti?t user bao g?m subscriptions và orders
-/// </summary>
 public class GetUserDetailUseCase
 {
     private readonly IUserApiService _userApiService;
@@ -22,11 +19,6 @@ public class GetUserDetailUseCase
 
     public async Task<Result<UserDetailResult>> ExecuteAsync(int userId)
     {
-        var token = _sessionService.CurrentSession?.AccessToken?.Token?.Trim('"');
-
-        if (string.IsNullOrEmpty(token))
-            return Result.Failure<UserDetailResult>("Phiên ??ng nh?p không h?p l?.");
-
         return await _userApiService.GetUserDetailAsync(userId);
     }
 }
