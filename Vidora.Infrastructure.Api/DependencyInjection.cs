@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddTransient<IAuthApiService, AuthApiService>();
         services.AddTransient<IStatsApiService, StatsApiService>();
         services.AddTransient<IMovieApiService, MovieApiService>();
+        services.AddTransient<IUserApiService, UserApiService>();
 
         //
         services.AddSingleton<ApiClient>();

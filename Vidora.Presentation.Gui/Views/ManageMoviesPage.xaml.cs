@@ -269,8 +269,15 @@ public sealed partial class ManageMoviesPage : Page
             {
                 await ViewModel.UpdateMovieCommand.ExecuteAsync(null);
                 
-                // Hiển thị thông báo thành công
-                ShowNotification("Thành công", $"Đã cập nhật phim '{movieTitle}' thành công!", InfoBarSeverity.Success);
+                // Kiểm tra kết quả trước khi hiển thị thông báo
+                if (ViewModel.IsSuccess)
+                {
+                    ShowNotification("Thành công", $"Đã cập nhật phim '{movieTitle}' thành công!", InfoBarSeverity.Success);
+                }
+                else
+                {
+                    ShowNotification("Lỗi", ViewModel.ErrorMessage ?? "Không thể cập nhật phim.", InfoBarSeverity.Error);
+                }
             }
         }
     }
@@ -397,8 +404,15 @@ public sealed partial class ManageMoviesPage : Page
                 var movieTitle = movie.Title;
                 await ViewModel.ToggleDeleteCommand.ExecuteAsync(movie);
                 
-                // Hiển thị thông báo thành công
-                ShowNotification("Thành công", $"Đã xóa phim '{movieTitle}' thành công!", InfoBarSeverity.Success);
+                // Kiểm tra kết quả trước khi hiển thị thông báo
+                if (ViewModel.IsSuccess)
+                {
+                    ShowNotification("Thành công", $"Đã xóa phim '{movieTitle}' thành công!", InfoBarSeverity.Success);
+                }
+                else
+                {
+                    ShowNotification("Lỗi", ViewModel.ErrorMessage ?? "Không thể xóa phim.", InfoBarSeverity.Error);
+                }
             }
         }
     }
