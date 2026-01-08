@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Vidora.Presentation.Gui.Views.ManageUsersPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Vidora.Presentation.Gui.Views"
+    xmlns:results="using:Vidora.Core.Contracts.Results"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="Transparent" Margin="0 20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===== INFOBAR THÔNG BÁO ===== -->
+        <InfoBar x:Name="NotificationInfoBar"
+             Grid.Row="0" 
+             Grid.RowSpan="3" 
+             VerticalAlignment="Top"
+             HorizontalAlignment="Center"
+             Margin="0,10,0,0"
+             Canvas.ZIndex="999"
+             IsOpen="False"
+             IsClosable="True"
+             Severity="Success"
+             Width="500"/>
+
+        <!-- ===== HEADER ===== -->
+        <Grid Grid.Row="0" Padding="40,30,40,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Spacing="10">
+                <TextBlock Text="Manage Users"
+                       FontSize="30"
+                       FontWeight="SemiBold"/>
+                <TextBlock Foreground="Gray" FontSize="14">
+                    <Run Text="Total: "/>
+                    <Run Text="{x:Bind ViewModel.TotalItems, Mode=OneWay}" FontWeight="SemiBold"/>
+                    <Run Text=" users"/>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <!-- ===== FILTER SECTION ===== -->
+        <Border Grid.Row="1" 
+                Margin="40,0,40,20"
+                Padding="20"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="12"
+                BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Search by FullName/Email/Username -->
+                <AutoSuggestBox Grid.Column="0"
+                            PlaceholderText="Search by name, email, username..."
+                            QueryIcon="Find"
+                            MinWidth="300"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            QuerySubmitted="OnSearchQuerySubmitted"/>
+
+                <!-- Status Filter -->
+                <ComboBox Grid.Column="1"
+                          Margin="16,0,0,0"
+                          MinWidth="150"
+                          PlaceholderText="Status"
+                          VerticalAlignment="Center"
+                          ItemsSource="{x:Bind ViewModel.StatusOptions}"
+                          SelectedItem="{x:Bind ViewModel.SelectedStatus, Mode=TwoWay}"/>
+
+                <!-- Search Button -->
+                <Button Grid.Column="2"
+                        Margin="16,0,0,0"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Command="{x:Bind ViewModel.SearchCommand}"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE721;" FontSize="14"/>
+                        <TextBlock Text="Search"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Clear Filters Button -->
+                <Button Grid.Column="3"
+                        Margin="8,0,0,0"
+                        Command="{x:Bind ViewModel.ClearFiltersCommand}"
+                        VerticalAlignment="Center"
+                        ToolTipService.ToolTip="Clear Filters">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE894;" FontSize="14"/>
+                        <TextBlock Text="Clear"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ===== CONTENT ===== -->
+        <Border Grid.Row="2"
+            Margin="40,0,40,40"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="12"
+            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+            BorderThickness="1">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- ===== TABLE HEADER ===== -->
+                <Grid Grid.Row="0"
+                  Padding="30,10"
+                  BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                  BorderThickness="0,0,0,1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="USER" FontWeight="Bold" Foreground="Gray"/>
+                    <TextBlock Grid.Column="1" Text="EMAIL" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="ROLE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="STATUS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="CREATED DATE" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="5" Text="ACTIONS" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Center"/>
+                </Grid>
+
+                <!-- ===== LIST ===== -->
+                <ListView Grid.Row="1"
+                      ItemsSource="{x:Bind ViewModel.Users, Mode=OneWay}"
+                      SelectionMode="None"
+                      Padding="0">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="results:AdminUserResult">
+                            <Grid Padding="20,14" 
+                                  BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+                                  BorderThickness="0,0,0,1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.5*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="1.5*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- USER INFO -->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14">
+                                    <PersonPicture Width="40" Height="40" 
+                                                   DisplayName="{x:Bind FullName, Mode=OneWay}"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind FullName, Mode=OneWay}"
+                                               FontWeight="SemiBold"
+                                               FontSize="14"/>
+                                        <TextBlock Text="{x:Bind Username, Mode=OneWay}"
+                                               Foreground="Gray"
+                                               FontSize="12"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- EMAIL -->
+                                <TextBlock Grid.Column="1"
+                                       Text="{x:Bind Email, Mode=OneWay}"
+                                       VerticalAlignment="Center"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+
+                                <!-- ROLE -->
+                                <Border Grid.Column="2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Padding="10,4"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource SystemAccentColorLight2}">
+                                    <TextBlock Text="{x:Bind RoleDisplayText, Mode=OneWay}"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"/>
+                                </Border>
+
+                                <!-- STATUS -->
+                                <Border Grid.Column="3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Padding="10,4"
+                                        CornerRadius="4"
+                                        Background="{ThemeResource SystemFillColorSuccessBackgroundBrush}">
+                                    <TextBlock Text="{x:Bind StatusDisplayText, Mode=OneWay}"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"/>
+                                </Border>
+
+                                <!-- CREATED AT -->
+                                <TextBlock Grid.Column="4"
+                                       Text="{x:Bind CreatedAtDisplay, Mode=OneWay}"
+                                       VerticalAlignment="Center"
+                                       Foreground="Gray"
+                                       HorizontalAlignment="Center"
+                                       FontSize="12"/>
+
+                                <!-- ACTIONS -->
+                                <StackPanel Grid.Column="5"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                                    <Button Click="OnViewDetailClick" 
+                                        Background="Transparent" 
+                                        BorderThickness="0"
+                                        ToolTipService.ToolTip="View Details">
+                                        <FontIcon Glyph="&#xE890;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" FontSize="16"/>
+                                    </Button>
+                                    <Button Click="OnToggleStatusClick" 
+                                        Background="Transparent" 
+                                        BorderThickness="0"
+                                        ToolTipService.ToolTip="Lock/Unlock">
+                                        <FontIcon Glyph="&#xE72E;" Foreground="Orange" FontSize="16"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- ===== LOADING ===== -->
+                <ProgressRing Grid.Row="1"
+                              IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" 
+                              Visibility="{x:Bind ViewModel.IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+
+                <!-- ===== PAGINATION ===== -->
+                <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="12"
+                        Padding="20">
+                    <Button Content="◀" 
+                        Command="{x:Bind ViewModel.ChangePageCommand}" 
+                        CommandParameter="Prev"
+                        IsEnabled="{x:Bind ViewModel.CanGoPrev, Mode=OneWay}" />
+
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Page "/>
+                        <Run Text="{x:Bind ViewModel.CurrentPage, Mode=OneWay}" FontWeight="Bold"/>
+                        <Run Text=" / "/>
+                        <Run Text="{x:Bind ViewModel.TotalPages, Mode=OneWay}" FontWeight="Bold"/>
+                    </TextBlock>
+
+                    <Button Content="▶" 
+                        Command="{x:Bind ViewModel.ChangePageCommand}" 
+                        CommandParameter="Next"
+                        IsEnabled="{x:Bind ViewModel.CanGoNext, Mode=OneWay}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

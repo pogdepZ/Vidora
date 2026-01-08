@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:Vidora.Presentation.Gui.Converters">
+
+    <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverterInvert" Invert="True"/>
+
+    <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverter"/>
+    <converters:BooleanToBackButtonVisibilityConverter x:Key="BoolToBackButtonVisibilityConverterInvert" Invert="True"/>
+
+    <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+
+    <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+    <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverterInvert" Invert="True"/>
+
+    <converters:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter"/>
+</ResourceDictionary>
